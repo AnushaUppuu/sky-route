@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "flight_number": "AI101",
+    "source": "Delhi",
+    "destination": "Mumbai",
+    "price": 4500
+  },
+  {
+    "id": 2,
+    "flight_number": "AI102",
+    "source": "Chennai",
+    "destination": "Bangalore",
+    "price": 3500
+  }
+]
