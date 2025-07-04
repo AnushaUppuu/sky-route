@@ -2,11 +2,11 @@
 require 'rails_helper'
 
 RSpec.describe "FlightsController", type: :request do
-  let(:file_path) { Rails.root.join('data', 'data.txt') }
+  let(:file_path) { Rails.root.join('data', 'test.txt') }
   let(:flights_data) do
     [
-      { "id" => 1, "flight_number" => "AI101", "origin" => "Delhi", "destination" => "Mumbai", "price" => 4500 },
-      { "id" => 2, "flight_number" => "AI102", "origin" => "Chennai", "destination" => "Bangalore", "price" => 3500 }
+      { "id" => 1, "flight_number" => "AI101", "source" => "Delhi", "destination" => "Mumbai", "price" => 4500 },
+      { "id" => 2, "flight_number" => "AI102", "source" => "Chennai", "destination" => "Bangalore", "price" => 3500 }
     ]
   end
 
@@ -15,9 +15,7 @@ RSpec.describe "FlightsController", type: :request do
     File.write(file_path, JSON.pretty_generate(flights_data))
   end
 
-  after do
-    File.delete(file_path) if File.exist?(file_path)
-  end
+
 
   describe "GET /flights" do
     it "renders the index page with flights" do
