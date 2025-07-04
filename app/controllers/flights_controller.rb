@@ -11,8 +11,6 @@ class FlightsController < ApplicationController
   def update
     file_content = File.read(FILE_PATH)
     flights = JSON.parse(file_content)
-
-    # Example Update: Change flight price
     flights[0]["price"] = 9999
 
     File.write(FILE_PATH, JSON.pretty_generate(flights))
@@ -25,8 +23,6 @@ class FlightsController < ApplicationController
     end
     file_content = File.read(FILE_PATH)
     flights = JSON.parse(file_content)
-
-    # Example Search: Find flights to a specific destination
     search_results = flights.select { |flight| flight["destination"].downcase.include?(params[:query].downcase) && flight["origin"].downcase.include?(params[:origin].downcase) }
     render json: search_results 
   end
