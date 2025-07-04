@@ -34,14 +34,6 @@
   font-size: 16px;
 }
 
-
-.navbar-right {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-}
-
-
 @media (max-width: 768px) {
   .navbar-container {
     flex-direction: column;
@@ -53,10 +45,6 @@
     position: static;
     transform: none;
     margin: 10px 0;
-  }
-
-  .navbar-right {
-    justify-content: center;
   }
 
   .navbar-center a {
