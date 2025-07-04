@@ -1,8 +1,0 @@
-<h1>Flights</h1>
-<ul>
-  <% @flights.each do |flight| %>
-    <li>
-      <%= flight["flight_number"] %> - <%= flight["origin"] %> to <%= flight["destination"] %> - ₹<%= flight["price"] %>
-    </li>
-  <% end %>
-</ul>
