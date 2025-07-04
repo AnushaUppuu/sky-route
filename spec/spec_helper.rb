@@ -3,7 +3,7 @@ require 'simplecov-console'
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
   SimpleCov::Formatter::HTMLFormatter,  # HTML report
-  SimpleCov::Formatter::Console,        # Console table report
+  SimpleCov::Formatter::Console        # Console table report
 ])
 
 SimpleCov.start 'rails'

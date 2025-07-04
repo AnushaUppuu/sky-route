@@ -33,7 +33,6 @@ RSpec.describe "FlightsController", type: :request do
       post "/flights/update"
       updated_flights = JSON.parse(File.read(file_path))
       expect(updated_flights.first["price"]).to eq(4500)
-     
     end
   end
 
@@ -49,7 +48,6 @@ RSpec.describe "FlightsController", type: :request do
       get "/flights/search", params: { query: "", origin: "" }
       expect(response).to redirect_to(root_path)
       follow_redirect!
-     
     end
   end
 end

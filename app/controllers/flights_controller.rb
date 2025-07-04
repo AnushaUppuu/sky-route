@@ -24,6 +24,6 @@ class FlightsController < ApplicationController
     file_content = File.read(FILE_PATH)
     flights = JSON.parse(file_content)
     search_results = flights.select { |flight| flight["destination"].downcase.include?(params[:query].downcase) && flight["origin"].downcase.include?(params[:origin].downcase) }
-    render json: search_results 
+    render json: search_results
   end
 end
