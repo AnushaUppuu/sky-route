@@ -7,7 +7,6 @@
   background-color: #75b2e2;
 }
 .flight-img {
-  /* background-color: red; */
   display: flex;
   justify-content: right;
   align-self: start;
