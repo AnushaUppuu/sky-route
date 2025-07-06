@@ -1,8 +1,16 @@
-<h1>Flights</h1>
-<ul>
-  <% @flights.each do |flight| %>
-    <li>
-      <%= flight["flight_number"] %> - <%= flight["origin"] %> to <%= flight["destination"] %> - ₹<%= flight["price"] %>
-    </li>
-  <% end %>
-</ul>
+<body class="index-body" >
+<div class="inner-container">
+<div class="welcome-text-box">
+<h2 class="subheading">
+Safe paths, endless skies<br>
+<span class="highlight">Welcome aboard SkyRoute!</span></h2>
+   <%= link_to "Get Started", flights_path, class: "get-started-btn" %>
+</div>
+<div class="flight-img">
+<%= image_tag 'flight.png', height:500  %>
+</div>
+
+</div>
+ 
+
+</body>
