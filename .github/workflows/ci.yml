@@ -5,7 +5,7 @@ on:
   push:
     branches: 
     - main
-    - feature/flight-data-parsing
+    - ui/class-type
 
 jobs:
   scan_ruby:
