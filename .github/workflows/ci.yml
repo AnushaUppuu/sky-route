@@ -5,7 +5,7 @@ on:
   push:
     branches: 
     - main
-    - UI/homepage
+    - feature/flight-data-parsing
 
 jobs:
   scan_ruby:
