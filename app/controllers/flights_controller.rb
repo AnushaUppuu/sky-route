@@ -18,12 +18,12 @@ class FlightsController < ApplicationController
     render :search
   end
   def details
-    if params[:origin].present? && params[:query].present?
+    if params[:source].present? && params[:destination].present?
       file_content = File.read(FILE_PATH)
       flights = JSON.parse(file_content)
       search_results = flights.select do |flight|
-        flight["destination"].downcase.include?(params[:query].downcase) &&
-        flight["source"].downcase.include?(params[:origin].downcase)
+        flight["destination"].downcase.include?(params[:destination].downcase) &&
+        flight["source"].downcase.include?(params[:source].downcase)
       end
 
       @search_results = search_results

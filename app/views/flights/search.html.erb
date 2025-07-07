@@ -13,19 +13,19 @@
       <div class="form-grid">
         <div class="form-group">
           <label>From</label>
-          <%= select_tag :origin, 
+          <%= select_tag :source, 
               options_for_select([
                 "Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Ahmedabad"
-              ], @origin), 
+              ], @source), 
               prompt: "", class: "form-select" %>
         </div>
 
         <div class="form-group">
           <label>To</label>
-          <%= select_tag :query, 
+          <%= select_tag :destination, 
               options_for_select([
                 "Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Ahmedabad"
-              ], @query), 
+              ], @destination), 
               prompt: "", class: "form-select" %>
         </div>
       </div>
