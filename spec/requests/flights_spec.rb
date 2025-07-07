@@ -17,7 +17,7 @@ RSpec.describe "FlightsController", type: :request do
 
 
 
- 
+
 
   describe "POST /flights/update" do
     it "updates flight data" do
