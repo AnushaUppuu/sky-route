@@ -2,6 +2,12 @@
 
 <div class="flight-results-wrapper">
   <div class="flight-page-container">
+  <div class ="flight-header">
+  <%=link_to "Go Back", search_flights_path, class: "go-back" %>
+  <h1 class="available-flights-text">Available Flights</h1>
+ </div>
+
+   <% if @search_results.present? %>
     <div class="flight-header-row">
       <span>Flights</span>
       <span>From</span>
@@ -11,6 +17,7 @@
       <span></span>
     </div>
 
+   
     <% @search_results.each do |flight| %>
       <div class="flight-card">
         <div class="flight-cell"><strong><%= flight["flight_number"] %></strong></div>
@@ -23,5 +30,11 @@
         </div>
       </div>
     <% end %>
+  <% else %>
+    <div class="no-flights-message">
+      <p>No flights were available for your search.</p>
+    </div>
+  <% end %>
+
   </div>
 </div>
