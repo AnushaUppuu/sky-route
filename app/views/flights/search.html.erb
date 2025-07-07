@@ -15,18 +15,18 @@
           <label>From</label>
           <%= select_tag :source, 
               options_for_select([
-                "Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Ahmedabad", "Pune", "Warangal"
+                "Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Ahmedabad", "Pune",
               ], @source), 
-              prompt: "", class: "form-select" %>
+              prompt: "Where from ?", class: "form-select" %>
         </div>
 
         <div class="form-group">
           <label>To</label>
           <%= select_tag :destination, 
               options_for_select([
-                "Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Ahmedabad", "Pune", "Basar"
+                "Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Ahmedabad", "Pune",
               ], @destination), 
-              prompt: "", class: "form-select" %>
+              prompt: "Where to ?", class: "form-select" %>
         </div>
       </div>
 
@@ -39,18 +39,14 @@
         <div class="form-group">
           <label>Class Type</label>
           <%= select_tag :class_type, 
-              options_for_select(["Economic", "Second class", "First class"], @class_type), 
+              options_for_select(["Economy", "Second class", "First class"], @class_type), 
               prompt: "Select Class", class: "form-select" %>
         </div>
       </div>
       <div class="form-group">
-          <label>Class Type</label>
-          <%= select_tag :class_type, 
-              options_for_select([
-                "Economy", "First Class", "Second Class"
-              ], @class_type), 
-              prompt: "", class: "form-select" %>
-        </div>
+      <label>Number of passengers</label>
+      <%= number_field_tag :passengers, params[:passengers], min: 1, max: 6, class: "form-select", placeholder: "Enter number" %>
+      </div>
 
       <div class="button-wrapper">
         <%= submit_tag "Search", class: "search-button" %>
