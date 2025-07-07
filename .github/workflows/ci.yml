@@ -5,7 +5,8 @@ on:
   push:
     branches: 
     - main
-    - ui/class-type
+    - feature/fare-calculation
+
 
 jobs:
   scan_ruby:
