@@ -3,7 +3,7 @@ Rails.application.routes.draw do
    root "flights#index"
   resources :flights, only: [ :index ] do
     collection do
-      get :results
+      get :details
       get :search
       post :update
     end
