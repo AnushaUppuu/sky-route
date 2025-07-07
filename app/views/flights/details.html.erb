@@ -9,7 +9,8 @@
 
    <% if @search_results.present? %>
     <div class="flight-header-row">
-      <span>Flights</span>
+      <span>Airline</span>
+      <span>FlightNumber</span>
       <span>From</span>
       <span>To</span>
       <span>Date</span>
@@ -20,11 +21,16 @@
    
     <% @search_results.each do |flight| %>
       <div class="flight-card">
+        <div class="flight-cell"><%= flight[:airlines] %></div>
         <div class="flight-cell"><strong><%= flight[:flight_number] %></strong></div>
         <div class="flight-cell"><%= flight[:source] %></div>
         <div class="flight-cell"><%= flight[:destination] %></div>
         <div class="flight-cell"><%= flight[:departure_date] %></div>
-        <div class="flight-cell">Rs. <%= flight[:display_price] %></div>
+        <div class="flight-cell">
+          <div class="flight-cell">Rs. <%= flight[:display_price] %></div>
+        <div class="flight-cell"> Total cost: Rs. <%= flight[:total_cost] %></div>
+        </div>
+      
         <div class="flight-cell">
           <%= link_to "Book now", "#", class: "book-btn" %>
         </div>
