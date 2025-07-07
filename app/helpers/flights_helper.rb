@@ -16,5 +16,5 @@ module FlightsHelper
         else
           base_price + (0.1 * base_price)* days
         end
-      end 
+      end
 end
