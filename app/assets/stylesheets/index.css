@@ -1,0 +1,97 @@
+.index-body {
+  background-image: url("cloud.png");
+  background-size: 150%;
+  background-repeat: no-repeat;
+  background-position: center 30%;
+  min-height: 100vh;
+  background-color: #75b2e2;
+}
+.flight-img {
+  display: flex;
+  justify-content: right;
+  align-self: start;
+}
+.get-started-btn {
+  display: inline-block;
+  padding: 14px 32px;
+  background-color: #75b2e2;
+  color: #fff;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s;
+  margin-top: 20px;
+}
+.get-started-btn:hover {
+  background-color: #75b2e2;
+  color: black;
+}
+
+.welcome-text-box {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+
+  width: 40%;
+  height: 40%;
+  align-self: flex-end;
+  padding: 10px;
+}
+.inner-container {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-around;
+  align-items: baseline;
+}
+@media (max-width: 900px) {
+  .index-body {
+    background-image: url("cloud.png");
+    background-size: cover;
+    background-repeat: repeat;
+    background-position: center;
+  }
+  .inner-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    min-height: 40vh;
+    gap: 10px;
+  }
+  .welcome-text-box {
+    width: 80%;
+    margin-bottom: 24px;
+    align-items: center;
+    text-align: center;
+    align-self: center;
+  }
+  .flightImg {
+    width: 100%;
+    height: auto;
+    align-self: center;
+  }
+  .flight-img {
+    justify-content: center;
+    margin-top: 16px;
+    width: 50%;
+    height: 10%;
+    align-self: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .welcome-text-box {
+    width: 98%;
+    padding: 4px;
+  }
+  .get-started-btn {
+    font-size: 1rem;
+    padding: 10px 18px;
+  }
+  .subheading {
+    font-size: 1.2rem;
+  }
+}

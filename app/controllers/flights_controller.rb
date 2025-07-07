@@ -4,8 +4,6 @@ class FlightsController < ApplicationController
   FILE_PATH = Rails.root.join('data', 'data.txt')
 
   def index
-    file_content = File.read(FILE_PATH)
-    @flights = JSON.parse(file_content)
   end
 
   def update

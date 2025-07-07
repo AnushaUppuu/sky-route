@@ -17,14 +17,7 @@ RSpec.describe "FlightsController", type: :request do
 
 
 
-  describe "GET /flights" do
-    it "renders the index page with flights" do
-        get flights_path
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("AI101")
-      expect(response.body).to include("AI102")
-    end
-  end
+
 
   describe "POST /flights/update" do
     it "updates flight data" do
