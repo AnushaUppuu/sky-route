@@ -1,0 +1,109 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.hero-section {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #75B2E2;
+  min-height: 100vh;
+  padding: 40px 60px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.search-box {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+
+  padding: 40px 30px;
+  border-radius: 25px;
+  width: 400px;
+  height: 250px;
+  color: white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+}
+
+.search-box h2 {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+}
+
+.ticket-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.form-group {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 600px) {
+  .form-group {
+    flex: 1 1 45%;
+  }
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: 500;
+  font-weight: bold;
+}
+
+.form-select {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(0px);
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  color: black;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.search-button {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  width: 40%;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
