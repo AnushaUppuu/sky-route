@@ -5,8 +5,7 @@ on:
   push:
     branches: 
     - main
-    - feature/fare-calculation
-
+    - feature/date-base-price
 
 jobs:
   scan_ruby:

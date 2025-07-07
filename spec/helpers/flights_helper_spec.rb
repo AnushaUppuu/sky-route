@@ -48,4 +48,43 @@ RSpec.describe FlightsHelper, type: :helper do
       expect(helper.calculate_total_fare(20, 15, 3000, 2)).to eq(6000.0)
     end
   end
+
+  describe '#daysBefore' do
+    it 'returns correct days difference' do
+      date = (Date.today + 10).to_s
+      expect(helper.daysBefore(date)).to eq(10)
+    end
+
+    it 'returns 0 for nil date' do
+      expect(helper.daysBefore(nil)).to eq(0)
+    end
+
+    it 'returns 0 for empty date' do
+      expect(helper.daysBefore("")).to eq(0)
+    end
+
+    it 'returns 0 for invalid date' do
+      expect(helper.daysBefore("invalid-date")).to eq(0)
+    end
+  end
+
+  describe '#days_based_price' do
+    it 'returns base price if days > 15' do
+      expect(helper.days_based_price(20, 1000)).to eq(1000)
+    end
+
+    it 'adds 20% per day when days between 15 and 3' do
+      days = 10
+      base_price = 1000
+      expected = base_price + (0.2 * base_price) * days
+      expect(helper.days_based_price(days, base_price)).to eq(expected)
+    end
+
+    it 'adds 10% per day when days < 3' do
+      days = 2
+      base_price = 1000
+      expected = base_price + (0.1 * base_price) * days
+      expect(helper.days_based_price(days, base_price)).to eq(expected)
+    end
+  end
 end

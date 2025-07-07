@@ -1,6 +1,7 @@
 require 'csv'
 
 class FlightsController < ApplicationController
+  include FlightsHelper
   FILE_PATH = Rails.root.join('data', 'data.txt')
 
   def index
@@ -22,6 +23,7 @@ class FlightsController < ApplicationController
   def details
     if params[:source].present? && params[:destination].present? && params[:class_type].present?
       flights = load_flights_from_txt
+      passengers = params[:passengers].present? ? params[:passengers].to_i : 1
       search_results = flights.select do |flight|
         flight[:source].downcase.include?(params[:source].downcase) &&
         flight[:destination].downcase.include?(params[:destination].downcase)
@@ -30,7 +32,7 @@ class FlightsController < ApplicationController
       class_type = params[:class_type].downcase
       search_results = search_results.select do |flight|
           available_key = "#{class_type.gsub(' ', '_')}_available_seats".to_sym
-          flight[available_key].to_i > 0
+          flight[available_key].to_i > passengers
         end
 
       if params[:departure_date].present?
@@ -44,7 +46,15 @@ class FlightsController < ApplicationController
         when 'first class' then :first_class_base_price
         when 'second class' then :second_class_base_price
         end
-          flight.merge(display_price: flight[price_key])
+        available_key = "#{class_type.gsub(' ', '_')}_available_seats".to_sym
+        total_seats_key = "#{class_type.gsub(' ', '_')}_total_seats".to_sym
+
+        base_price = flight[price_key].to_f
+        available_seats = flight[available_key].to_i
+        total_seats = flight[total_seats_key].to_i
+
+        total_fare = calculate_total_fare(total_seats, available_seats, base_price, passengers)
+          flight.merge(total_cost: total_fare, display_price: flight[price_key])
         end
     else
       @search_results = []
