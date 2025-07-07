@@ -17,13 +17,17 @@ class FlightsController < ApplicationController
     redirect_to root_path, notice: "Flight data updated successfully!"
   end
   def search
-    if params[:query].blank? || params[:origin].blank?
-      flash[:alert] = "Please provide both destination and souce."
-      redirect_to root_path and return
+    if params[:origin].present? && params[:query].present?
+      file_content = File.read(FILE_PATH)
+      flights = JSON.parse(file_content)
+      search_results = flights.select do |flight|
+        flight["destination"].downcase.include?(params[:query].downcase) &&
+        flight["source"].downcase.include?(params[:origin].downcase)
+      end
+
+      @search_results = search_results
     end
-    file_content = File.read(FILE_PATH)
-    flights = JSON.parse(file_content)
-    search_results = flights.select { |flight| flight["destination"].downcase.include?(params[:query].downcase) && flight["source"].downcase.include?(params[:origin].downcase) }
-    render json: search_results
+    render :search
   end
+  
 end
