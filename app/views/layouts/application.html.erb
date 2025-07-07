@@ -24,12 +24,14 @@
 
     <%= stylesheet_link_tag 'navbar', media: 'all' %>
      <%= stylesheet_link_tag 'index', media: 'all' %>
+     <%= stylesheet_link_tag "details", media: "all" %>
+
 
 
     <%= javascript_importmap_tags %>
   </head>
 
-<body>
+<body class="<%= content_for?(:body_class) ? yield(:body_class) : '' %>">
     <%= render 'shared/header' %>
 
     <main>
