@@ -19,16 +19,23 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+
+    <%= stylesheet_link_tag 'footer', media: 'all' %>
+
     <%= stylesheet_link_tag 'navbar', media: 'all' %>
      <%= stylesheet_link_tag 'index', media: 'all' %>
+
 
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-
+<body>
     <%= render 'shared/header' %>
-    <%= yield %>
 
+    <main>
+      <%= yield %>
+    </main>
+
+    <%= render 'shared/footer' %>
   </body>
 </html>
