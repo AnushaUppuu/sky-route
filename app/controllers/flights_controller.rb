@@ -10,7 +10,6 @@ class FlightsController < ApplicationController
     file_content = File.read(FILE_PATH)
     flights = JSON.parse(file_content)
     flights[0]["price"] = 9999
-
     File.write(FILE_PATH, JSON.pretty_generate(flights))
     redirect_to root_path, notice: "Flight data updated successfully!"
   end
@@ -25,7 +24,6 @@ class FlightsController < ApplicationController
         flight["destination"].downcase.include?(params[:destination].downcase) &&
         flight["source"].downcase.include?(params[:source].downcase)
       end
-
       @search_results = search_results
     end
     render :details

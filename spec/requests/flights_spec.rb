@@ -34,6 +34,5 @@ RSpec.describe "FlightsController", type: :request do
       expect(response.body).to include("AI101")
       expect(response.body).not_to include("AI102")
     end
-
   end
 end
