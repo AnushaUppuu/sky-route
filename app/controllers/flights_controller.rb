@@ -28,7 +28,7 @@ class FlightsController < ApplicationController
   file_content = File.read(FILE_PATH)
   flights = JSON.parse(file_content)
 
-  @search_results = flights  
+  @search_results = flights
   render :details
   end
 end
