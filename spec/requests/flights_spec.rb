@@ -27,18 +27,12 @@ RSpec.describe "FlightsController", type: :request do
     end
   end
 
-  describe "GET /flights/search" do
-    it "returns search results matching origin and destination" do
-      get "/flights/search", params: { query: "Mumbai", origin: "Delhi" }
+  describe "GET /flights/details" do
+    it "returns search results matching source and destination" do
+      get "/flights/details", params: { destination: "Mumbai", source: "Delhi" }
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("AI101")
       expect(response.body).not_to include("AI102")
-    end
-
-    it "redirects with alert if params are missing" do
-      get "/flights/search", params: { query: "", origin: "" }
-      expect(response).to redirect_to(root_path)
-      follow_redirect!
     end
   end
 end

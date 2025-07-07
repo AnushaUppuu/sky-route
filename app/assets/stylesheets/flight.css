@@ -1,0 +1,153 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.hero-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px 60px;
+  box-sizing: border-box;
+  position: relative;
+  background-image: url("cloud.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left 50%;
+  background-color: #75b2e2;
+  gap: 50px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  padding: 40px 30px;
+  border-radius: 25px;
+  width: 100%;
+  max-width: 500px;
+  color: white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-sizing: border-box;
+}
+
+.search-box h2 {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+}
+
+.ticket-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.form-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.form-group {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 600px) {
+  .form-group {
+    flex: 1 1 45%;
+  }
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-select {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  color: black;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.search-button {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  width: 40%; 
+  transition: background-color 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: #ff4c4c;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  text-align: center;
+  margin-top: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+ .flight-image-search {
+  max-width: 500px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin-bottom: auto;
+  align-self: flex-start; 
+}
+
+
+@media (max-width: 768px) {
+  .hero-section {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    gap: 30px;
+    background-position: top center;
+  }
+
+  .flight-image-search {
+    max-width: 90%;
+    margin-top: 0;
+  }
+
+  .search-box {
+    width: 100%;
+    max-width: 90%;
+  }
+
+  .search-button {
+    width: 100%;
+  }
+}
