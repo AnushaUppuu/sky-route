@@ -24,7 +24,7 @@
         <div class="flight-cell"><%= flight[:source] %></div>
         <div class="flight-cell"><%= flight[:destination] %></div>
         <div class="flight-cell"><%= flight[:departure_date] %></div>
-        <div class="flight-cell"><%= flight[:economy_base_price] %> RS</div>
+        <div class="flight-cell">Rs. <%= flight[:display_price] %></div>
         <div class="flight-cell">
           <%= link_to "Book now", "#", class: "book-btn" %>
         </div>
