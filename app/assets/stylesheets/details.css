@@ -1,7 +1,7 @@
 .flight-results-body {
   background-color: #75b2e2;
   min-height: 100vh;
-  font-family: 'Inter';
+  font-family: "Inter";
   margin: 0;
   padding: 0;
 }
@@ -10,10 +10,10 @@
   max-width: 1000px;
   margin: 2rem auto;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.2); 
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(6px);         
+  backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
 
@@ -25,7 +25,7 @@
 
 .flight-header-row {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1fr 1fr;
   align-items: center;
   text-align: center;
   padding: 1rem;
@@ -40,7 +40,7 @@
 
 .flight-card {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1fr 1fr;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.9);
   padding: 1rem;
@@ -216,4 +216,3 @@
     font-size: 15px;
   }
 }
-
