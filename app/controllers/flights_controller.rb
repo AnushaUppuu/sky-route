@@ -15,6 +15,9 @@ class FlightsController < ApplicationController
     redirect_to root_path, notice: "Flight data updated successfully!"
   end
   def search
+    render :search
+  end
+  def details
     if params[:origin].present? && params[:query].present?
       file_content = File.read(FILE_PATH)
       flights = JSON.parse(file_content)
@@ -25,14 +28,6 @@ class FlightsController < ApplicationController
 
       @search_results = search_results
     end
-    render :search
-  end
-  
-  def results
-  file_content = File.read(FILE_PATH)
-  flights = JSON.parse(file_content)
-
-  @search_results = flights
-  render :details
+    render :details
   end
 end
