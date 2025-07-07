@@ -15,27 +15,26 @@ body {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: left 50%;
-  min-height: 100vh;
   background-color: #75b2e2;
   gap: 50px;
+  flex-wrap: wrap;
 }
 
 .search-box {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-
   padding: 40px 30px;
   border-radius: 25px;
-  width: 400px;
-  height: 250px;
+  width: 100%;
+  max-width: 500px;
   color: white;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
   gap: 20px;
   border: 1px solid rgba(255, 255, 255, 0.25);
+  box-sizing: border-box;
 }
 
 .search-box h2 {
@@ -49,6 +48,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
 }
 
 .form-grid {
@@ -71,13 +71,11 @@ body {
 
 label {
   margin-bottom: 5px;
-  font-weight: 500;
   font-weight: bold;
 }
 
 .form-select {
   background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(0px);
   padding: 10px;
   border: none;
   border-radius: 10px;
@@ -88,6 +86,7 @@ label {
 .button-wrapper {
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 
 .search-button {
@@ -98,7 +97,7 @@ label {
   font-size: 16px;
   border-radius: 25px;
   cursor: pointer;
-  width: 40%;
+  width: 40%; 
   transition: background-color 0.3s ease;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
@@ -106,15 +105,49 @@ label {
 .search-button:hover {
   background-color: #0056b3;
 }
+
 .error-message {
-  color: red;
-  font-size: 0.9rem;
+  color: #ff4c4c;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  text-align: center;
   margin-top: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
-.flight-image-search {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  align-self: flex-start;
+ .flight-image-search {
+  max-width: 500px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin-bottom: auto;
+  align-self: flex-start; 
+}
+
+
+@media (max-width: 768px) {
+  .hero-section {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    gap: 30px;
+    background-position: top center;
+  }
+
+  .flight-image-search {
+    max-width: 90%;
+    margin-top: 0;
+  }
+
+  .search-box {
+    width: 100%;
+    max-width: 90%;
+  }
+
+  .search-button {
+    width: 100%;
+  }
 }
