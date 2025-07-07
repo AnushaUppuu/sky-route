@@ -24,7 +24,9 @@ class FlightsController < ApplicationController
         flight["destination"].downcase.include?(params[:destination].downcase) &&
         flight["source"].downcase.include?(params[:source].downcase)
       end
-      @search_results = search_results
+      @search_results = search_results.presence || []
+    else
+      @search_results = []
     end
     render :details
   end
