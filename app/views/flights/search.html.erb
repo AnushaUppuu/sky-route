@@ -1,29 +1,37 @@
 <div class="hero-section">
-<%= image_tag 'flight.png', height:500, class: "flight-image-search" %>
+  <%= image_tag 'flight.png', height: 500, class: "flight-image-search" %>
+
   <div class="search-box">
     <h2>Find your ticket Now 🛫</h2>
+
+    <% if flash[:alert] %>
+      <div class="error-message"><%= flash[:alert] %></div>
+    <% end %>
 
     <%= form_with url: search_flights_path, method: :get, local: true, class: "ticket-form" do %>
       <div class="form-grid">
         <div class="form-group">
           <label>From</label>
           <%= select_tag :origin, 
-                options_for_select([
-                  "Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Ahmedabad"
-                ], @origin), 
-                prompt: "", class: "form-select" %>
-
+              options_for_select([
+                "Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Ahmedabad"
+              ], @origin), 
+              prompt: "", class: "form-select" %>
         </div>
 
         <div class="form-group">
           <label>To</label>
           <%= select_tag :query, 
-                options_for_select([
-                  "Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Ahmedabad"
-                ], @query), 
-                prompt: "", class: "form-select" %>
-
+              options_for_select([
+                "Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Ahmedabad"
+              ], @query), 
+              prompt: "", class: "form-select" %>
         </div>
+      </div>
+
+      <div class="form-group date-group">
+        <label>Departure Date</label>
+        <%= date_field_tag :departure_date, @departure_date, class: "form-select" %>
       </div>
 
       <div class="button-wrapper">
