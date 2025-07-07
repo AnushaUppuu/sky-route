@@ -1,17 +1,23 @@
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 .hero-section {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  background-color: #75B2E2;
   min-height: 100vh;
   padding: 40px 60px;
   box-sizing: border-box;
   position: relative;
+  background-image: url("cloud.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left 50%;
+  min-height: 100vh;
+  background-color: #75b2e2;
+  gap: 50px;
 }
 
 .search-box {
@@ -30,7 +36,6 @@ body {
   justify-content: space-evenly;
   gap: 20px;
   border: 1px solid rgba(255, 255, 255, 0.25);
-
 }
 
 .search-box h2 {
@@ -106,4 +111,10 @@ label {
   font-size: 0.9rem;
   margin-top: 4px;
 }
-
+.flight-image-search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  align-self: flex-start;
+}
