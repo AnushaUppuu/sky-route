@@ -11,12 +11,11 @@ class FlightsController < ApplicationController
   end
 
   def load_flights_from_txt
-
     flights = []
     CSV.foreach(FILE_PATH, headers: true) do |row|
       flights << row.to_h.symbolize_keys
     end
-  
+
     flights
   end
 
@@ -25,15 +24,13 @@ class FlightsController < ApplicationController
       flights = load_flights_from_txt
       search_results = flights.select do |flight|
         flight[:destination].to_s.downcase.include?(params[:destination].downcase) &&
-        flight[:source].to_s.downcase.include?(params[:source].downcase) && 
+        flight[:source].to_s.downcase.include?(params[:source].downcase) &&
           flight[:departure_date].to_s.downcase.include?(params[:departure_date].downcase)
       end
       @search_results = search_results.presence || []
-    else 
+    else
       @search_results = []
     end
     render :details
   end
-
-  
 end
