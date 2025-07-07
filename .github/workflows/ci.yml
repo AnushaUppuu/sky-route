@@ -7,6 +7,7 @@ on:
     - main
     - feature/fare-calculation
 
+
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
