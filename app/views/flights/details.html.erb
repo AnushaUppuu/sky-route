@@ -1,0 +1,27 @@
+<% content_for :body_class, 'flight-results-body' %>
+
+<div class="flight-results-wrapper">
+  <div class="flight-page-container">
+    <div class="flight-header-row">
+      <span>Flights</span>
+      <span>From</span>
+      <span>To</span>
+      <span>Date</span>
+      <span>Price</span>
+      <span></span>
+    </div>
+
+    <% @search_results.each do |flight| %>
+      <div class="flight-card">
+        <div class="flight-cell"><strong><%= flight["flight_number"] %></strong></div>
+        <div class="flight-cell"><%= flight["source"] %></div>
+        <div class="flight-cell"><%= flight["destination"] %></div>
+        <div class="flight-cell"><%= flight["date"] || "02 May 2024" %></div>
+        <div class="flight-cell"><%= flight["price"] %> RS</div>
+        <div class="flight-cell">
+          <%= link_to "Book now", "#", class: "book-btn" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

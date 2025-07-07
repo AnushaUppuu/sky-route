@@ -1,0 +1,72 @@
+.flight-results-body {
+  background-size: 150%;
+  background-repeat: no-repeat;
+  background-position: center 30%;
+  min-height: 100vh;
+  background-color: #75b2e2;
+}
+
+
+.flight-results-wrapper {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: transparent;
+}
+
+.flight-page-container {
+  background: rgba(255, 255, 255, 0.7); 
+  padding: 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px); 
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.flight-header-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background: #f1f8fc;
+  font-weight: bold;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.flight-card {
+  display: flex;
+  justify-content: space-between;
+  background-color: #e0f7fa;
+  padding: 1rem;
+  border-radius: 16px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.flight-card:hover {
+  transform: scale(1.01);
+}
+
+.flight-cell {
+  flex: 1;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.book-btn {
+  background: linear-gradient(to right, #0288d1, #03a9f4);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 132, 255, 0.4);
+  transition: background 0.3s ease;
+}
+
+.book-btn:hover {
+  background: linear-gradient(to right, #0277bd, #039be5);
+}

@@ -42,3 +42,4 @@ node_modules/
 .byebug_history
 credentials/*.key
 env, .env.local
+coverage/

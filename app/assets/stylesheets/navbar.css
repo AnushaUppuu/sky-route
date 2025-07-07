@@ -1,6 +1,5 @@
-
 .navbar {
-  background-color: #75B2E2;
+  background: transparent;
   padding: 10px 20px;
 }
 
@@ -16,12 +15,12 @@
 }
 
 .logo {
-  height: 40px;
+  height: 60px;
 }
 
 .navbar-center {
   position: absolute;
-  left: 80%;
+  left: 90%;
   transform: translateX(-50%);
   display: flex;
   gap: 80px;
@@ -31,7 +30,7 @@
   text-decoration: none;
   color: white;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 @media (max-width: 768px) {
