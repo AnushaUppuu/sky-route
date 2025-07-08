@@ -38,10 +38,10 @@ module FlightsHelper
     available_percentage = percentage_seats_available(total_seats, available_seats)
     price_per_seat = seat_based_price(available_percentage, base_price)
 
-    total_fare = price_per_seat * passengers
+    total_fare = price_per_seat
 
     days = daysBefore(date)
-    total_fare_with_date_pricing = days_based_price(days, total_fare)
+    total_fare_with_date_pricing = days_based_price(days, total_fare)*passengers
 
     total_fare_with_date_pricing.round(2)
   end
