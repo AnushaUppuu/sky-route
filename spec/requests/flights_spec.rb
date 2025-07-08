@@ -167,16 +167,33 @@ RSpec.describe "FlightsController", type: :request do
     end
 
     context "when misses the required params" do
-      it "returns an empty @search_results and shows no flights message" do
+      it "redirects back to search with an alert when source is missing" do
         get "/flights/details", params: {
           destination: "Karimnagar",
           departure_date: "2025-07-25",
           class_type: "Economy"
         }
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("No flights were available for your search")
-        expect(response.body).not_to include("AI101")
-        expect(response.body).not_to include("VI103")
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to(search_flights_path)
+        follow_redirect!
+        expect(response.body).to include("Select both the source and destination cities")
+      end
+    end
+    context "when source and destination are the same" do
+      it "redirects back to the search page with an alert" do
+        get "/flights/details", params: {
+          source: "Delhi",
+          destination: "Delhi",
+          departure_date: "2025-07-20",
+          class_type: "Economy"
+        }
+
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to(search_flights_path)
+
+        follow_redirect!
+
+        expect(response.body).to include("Source and destination cannot be the same.")
       end
     end
   end
