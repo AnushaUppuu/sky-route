@@ -34,20 +34,28 @@ RSpec.describe FlightsHelper, type: :helper do
       expect(helper.seat_based_price(75, base_price)).to eq(3000.0)
     end
   end
-
   describe "#calculate_total_fare" do
-    it "returns 0 when total seats is 0" do
-      expect(helper.calculate_total_fare(0, 0, 3000, 2)).to eq(0)
-    end
-
-    it "calculates correctly for 25% availability" do
-      expect(helper.calculate_total_fare(20, 5, 3000, 3)).to eq(12150.0)
-    end
-
-    it "calculates correctly for 75% availability" do
-      expect(helper.calculate_total_fare(20, 15, 3000, 2)).to eq(6000.0)
-    end
+  it "returns 0 when total seats is 0" do
+    expect(helper.calculate_total_fare(0, 0, 3000, 2, "2025-07-20")).to eq(0)
   end
+
+  it "calculates correctly for 25% availability and date-based pricing" do
+    date = (Date.today + 10).to_s
+    available_percentage = helper.percentage_seats_available(20, 5)
+    seat_price = helper.seat_based_price(available_percentage, 3000)
+    total_fare = seat_price * 3
+    expected_total_fare = helper.days_based_price(10, total_fare).round(2)
+
+    expect(helper.calculate_total_fare(20, 5, 3000, 3, date)).to eq(expected_total_fare)
+  end
+
+  it "calculates correctly for 75% availability and date-based pricing" do
+    date = (Date.today + 20).to_s
+    expected_total_fare = helper.days_based_price(20, 3000 * 2).round(2)
+    expect(helper.calculate_total_fare(20, 15, 3000, 2, date)).to eq(expected_total_fare)
+  end
+end
+
 
   describe '#daysBefore' do
     it 'returns correct days difference' do
@@ -73,10 +81,10 @@ RSpec.describe FlightsHelper, type: :helper do
       expect(helper.days_based_price(20, 1000)).to eq(1000)
     end
 
-    it 'adds 20% per day when days between 15 and 3' do
+    it 'adds 2% per day when days between 15 and 3' do
       days = 10
       base_price = 1000
-      expected = base_price + (0.2 * base_price) * days
+      expected = base_price + (0.02 * base_price) * days
       expect(helper.days_based_price(days, base_price)).to eq(expected)
     end
 

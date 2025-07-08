@@ -32,7 +32,7 @@ class FlightsController < ApplicationController
       class_type = params[:class_type].downcase
       search_results = search_results.select do |flight|
           available_key = "#{class_type.gsub(' ', '_')}_available_seats".to_sym
-          flight[available_key].to_i > passengers
+          flight[available_key].to_i >= passengers
         end
 
       if params[:departure_date].present?
@@ -52,8 +52,8 @@ class FlightsController < ApplicationController
         base_price = flight[price_key].to_f
         available_seats = flight[available_key].to_i
         total_seats = flight[total_seats_key].to_i
-
-        total_fare = calculate_total_fare(total_seats, available_seats, base_price, passengers)
+        date=flight[:departure_date]
+        total_fare = calculate_total_fare(total_seats, available_seats, base_price, passengers, date)
           flight.merge(total_cost: total_fare, display_price: flight[price_key])
         end
     else
