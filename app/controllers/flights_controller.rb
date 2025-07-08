@@ -67,7 +67,7 @@ class FlightsController < ApplicationController
         total_seats = flight[total_seats_key].to_i
         date=flight[:departure_date]
         total_fare = calculate_total_fare(total_seats, available_seats, base_price, passengers, date)
-          flight.merge(total_cost: total_fare, display_price: flight[price_key])
+          flight.merge(total_cost: total_fare, display_price: flight[price_key], class_type: class_type, seats: available_seats)
         end
     else
       flash[:alert] = "Select both the source and destination cities"
