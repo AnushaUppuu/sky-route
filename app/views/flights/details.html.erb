@@ -1,46 +1,76 @@
 <% content_for :body_class, 'flight-results-body' %>
 
 <div class="flight-results-wrapper">
-  <div class="flight-page-container">
-  <div class ="flight-header">
-  <%=link_to "Go Back", search_flights_path, class: "go-back" %>
-  <h1 class="available-flights-text">Available Flights</h1>
- </div>
-
-   <% if @search_results.present? %>
-    <div class="flight-header-row">
-      <span>Airline</span>
-      <span>FlightNumber</span>
-      <span>From</span>
-      <span>To</span>
-      <span>Date</span>
-      <span>Price</span>
-      <span></span>
+    <div class="flight-header">
+        <%= link_to "← Go Back", search_flights_path, class: "go-back" %>
+        <h1 class="available-flights-text">
+            Available Flights (<%= params[:source] %> ➔ <%= params[:destination] %>)
+        </h1>
     </div>
 
-   
-    <% @search_results.each do |flight| %>
-      <div class="flight-card">
-        <div class="flight-cell"><%= flight[:airlines] %></div>
-        <div class="flight-cell"><strong><%= flight[:flight_number] %></strong></div>
-        <div class="flight-cell"><%= flight[:source] %></div>
-        <div class="flight-cell"><%= flight[:destination] %></div>
-        <div class="flight-cell"><%= flight[:departure_date] %></div>
-        <div class="flight-cell">
-          <div class="flight-cell">Rs. <%= flight[:display_price] %></div>
-        <div class="flight-cell"> Total cost: Rs. <%= flight[:total_cost] %></div>
+    <% if @search_results.present? %>
+        <div class="flights-container">
+            <% @search_results.each do |flight| %>
+                <div class="flight-card">
+                    <div class="flight-main-info">
+                        <div class="airline-info">
+                            <div class="airline-logo">
+                                <%= flight[:airlines].first(2).upcase %>
+                            </div>
+                            <div class="airline-details">
+                                <h3><%= flight[:airlines] %></h3>
+                                <p class="flight-number"><%= flight[:flight_number] %></p>
+                            </div>
+                        </div>
+                        <div class="class-badge"><%= flight[:class_type].capitalize %></div>
+                    </div>
+
+                    <div class="flight-route">
+                        <div class="route-point">
+                            <div class="route-time"><%= flight[:departure_time] %></div>
+                            <div class="route-date"><%= flight[:departure_date] %></div>
+                            <div class="route-location"><%= params[:source] %></div>
+                        </div>
+                        <div class="route-line"></div>
+                        <div class="route-point">
+                            <div class="route-time"><%= flight[:arrival_time] %></div>
+                            <div class="route-date"><%= flight[:arrival_date] %></div>
+                            <div class="route-location"><%= params[:destination] %></div>
+                        </div>
+                    </div>
+
+                    <div class="flight-details-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Passengers</div>
+                            <div class="detail-value"><%= params[:passengers] %></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Available Seats</div>
+                            <div class="detail-value"><%= flight[:seats] %></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Class Type</div>
+                            <div class="detail-value"><%= flight[:class_type].capitalize %></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Flight Number</div>
+                            <div class="detail-value"><%= flight[:flight_number] %></div>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-info">
+                            <div class="price-per-passenger">Rs. <%= flight[:display_price] %> per passenger</div>
+                            <div class="total-price">Rs. <%= flight[:total_cost] %></div>
+                        </div>
+                        <%= link_to "Book Now", "#", class: "book-btn" %>
+                    </div>
+                </div>
+            <% end %>
         </div>
-      
-        <div class="flight-cell">
-          <%= link_to "Book now", "#", class: "book-btn" %>
+    <% else %>
+        <div class="no-flights-message">
+            <p>No flights were available for your search.</p>
         </div>
-      </div>
     <% end %>
-  <% else %>
-    <div class="no-flights-message">
-      <p>No flights were available for your search.</p>
-    </div>
-  <% end %>
-
-  </div>
 </div>
