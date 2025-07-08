@@ -81,10 +81,10 @@ end
       expect(helper.days_based_price(20, 1000)).to eq(1000)
     end
 
-    it 'adds 20% per day when days between 15 and 3' do
+    it 'adds 2% per day when days between 15 and 3' do
       days = 10
       base_price = 1000
-      expected = base_price + (0.2 * base_price) * days
+      expected = base_price + (0.02 * base_price) * days
       expect(helper.days_based_price(days, base_price)).to eq(expected)
     end
 

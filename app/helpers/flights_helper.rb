@@ -28,7 +28,7 @@ module FlightsHelper
     if days>15
       base_price
     elsif days <= 15 && days >= 3
-      base_price + (0.2 * base_price)* days
+      base_price + (0.02 * base_price)* days
     else
       base_price + (0.1 * base_price)* days
     end
