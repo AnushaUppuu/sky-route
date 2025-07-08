@@ -8,6 +8,7 @@ class FlightsController < ApplicationController
   end
 
    def search
+    @cities = load_unique_cities
     render :search
   end
 
@@ -20,8 +21,20 @@ class FlightsController < ApplicationController
     flights
   end
 
+  def load_unique_cities
+    flights = load_flights_from_txt
+    sources = flights.map { |f| f[:source] }
+    destinations = flights.map { |f| f[:destination] }
+    (sources + destinations).uniq.compact.sort
+  end
+
   def details
-    if params[:source].present? && params[:destination].present? && params[:class_type].present?
+    if params[:source].present? && params[:destination].present? && params[:source] == params[:destination]
+      flash[:alert] = "Source and destination cannot be the same."
+      redirect_to search_flights_path and return
+    end
+
+    if params[:source].present? && params[:destination].present?
       flights = load_flights_from_txt
       passengers = params[:passengers].present? ? params[:passengers].to_i : 1
       search_results = flights.select do |flight|
@@ -29,7 +42,7 @@ class FlightsController < ApplicationController
         flight[:destination].downcase.include?(params[:destination].downcase)
       end
 
-      class_type = params[:class_type].downcase
+      class_type = params[:class_type].present? ? params[:class_type].downcase : 'economy'
       search_results = search_results.select do |flight|
           available_key = "#{class_type.gsub(' ', '_')}_available_seats".to_sym
           flight[available_key].to_i > passengers
@@ -57,7 +70,8 @@ class FlightsController < ApplicationController
           flight.merge(total_cost: total_fare, display_price: flight[price_key])
         end
     else
-      @search_results = []
+      flash[:alert] = "Select both the source and destination cities"
+      redirect_to search_flights_path and return
     end
 
     render :details
