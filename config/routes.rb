@@ -6,6 +6,8 @@ Rails.application.routes.draw do
       get :details
       get :search
       post :update
+    
     end
   end
+  get 'flights/seats/:flight_number', to: 'flights#seats', as: :flight_seats
 end
