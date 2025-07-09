@@ -1,0 +1,44 @@
+<% content_for :body_class, 'index-body' %>
+<body class="index-body">
+<h1>Select Your Seats</h1>
+
+<div id="seat-map">
+  <% if @seats.blank? %>
+    <p>No seat data available for this flight.</p>
+  <% else %>
+    <% @seats.each do |seat_class, seats| %>
+      <% # Group seats by row number (digits) %>
+      <% seats_by_row = seats.group_by { |seat, _status| seat[/\d+/] } %>
+      <% columns = ['A', 'B', 'C', 'D', 'E', 'F'] %>
+
+      <% seats_by_row.keys.sort.each do |row_number| %>
+        <div class="seat-row" data-row="<%= row_number %>">
+          <div class="row-label"><%= row_number %></div>
+          <% columns.each do |col| %>
+            <% seat_label = "#{row_number}#{col}" %>
+            <% status = seats[seat_label] || "unavailable" %>
+            <div
+              class="seat <%= seat_class %> <%= status == 'booked' ? 'booked' : (status == 'available' ? 'available' : 'unavailable') %>"
+              data-seat="<%= seat_label %>"
+              data-status="<%= status %>"
+              <% if status == "booked" || status == "unavailable" %>disabled<% end %>
+            >
+              <span class="tooltip">
+                <%= seat_label %><br>
+                <small><%= seat_class.humanize %></small>
+              </span>
+            </div>
+            <% if col == 'C' %>
+              <div class="aisle-gap"></div>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="confirm-button-container">
+<button id="confirm-seats">Confirm Seats</button>
+</div>
+</body>
