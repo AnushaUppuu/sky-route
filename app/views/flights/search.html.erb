@@ -8,6 +8,9 @@
     <% if flash[:alert] %>
       <div class="error-message"><%= flash[:alert] %></div>
     <% end %>
+    <% if flash[:notice] %>
+      <div class="notice-message"><%= flash[:notice] %></div>
+    <% end %>
 
     <%= form_with url: details_flights_path, method: :get, local: true, class: "ticket-form" do %>
         <div class="form-grid">
