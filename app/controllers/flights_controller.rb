@@ -28,6 +28,46 @@ class FlightsController < ApplicationController
     (sources + destinations).uniq.compact.sort
   end
 
+  def update_seat_count
+    flight_number = params[:flight_number]
+    class_type = params[:class_type]
+    passengers = params[:passengers].to_i
+
+    if flight_number.blank? || class_type.blank? || passengers <= 0
+      flash[:alert] = "Invalid booking details."
+      redirect_back(fallback_location: search_flights_path) and return
+    end
+
+    updated = false
+
+    data = CSV.table(FILE_PATH, headers: true, converters: nil)
+
+    data.each do |row|
+      if row[:flight_number].to_s == flight_number.to_s
+        available_key = "#{class_type.gsub(' ', '_')}_available_seats".to_sym
+        current_seats = row[available_key].to_i
+        if current_seats >= passengers
+          row[available_key] = (current_seats - passengers).to_s
+          updated = true
+        else
+          flash[:alert] = "Not enough seats available."
+          redirect_back(fallback_location: search_flights_path) and return
+        end
+      end
+    end
+
+    if updated
+      File.open(FILE_PATH, 'w') do |f|
+        f.write(data.to_csv)
+      end
+      flash[:notice] = "Your Booking successful!"
+    else
+      flash[:alert] = "Flight not found for updating seats."
+      redirect_back(fallback_location: search_flights_path) and return
+    end
+    redirect_to root_path
+  end
+
   def details
     if params[:source].present? && params[:destination].present? && params[:source] == params[:destination]
       flash[:alert] = "Source and destination cannot be the same."
