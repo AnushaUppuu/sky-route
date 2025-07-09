@@ -1,9 +1,10 @@
 require 'csv'
+require 'json'
 
 class FlightsController < ApplicationController
   include FlightsHelper
   FILE_PATH = Rails.root.join('data', 'data.txt')
-
+  SEATS_FILE_PATH=Rails.root.join('data','seats.json')
   def index
   end
 
@@ -20,7 +21,41 @@ class FlightsController < ApplicationController
 
     flights
   end
+  def seats
+    if params[:flight_number].blank?
+     redirect_to details_flights_path and return 
+    end
+    puts params[:flight_number]
+    flights = load_flights_from_txt
+    required_flight_number = params[:flight_number].to_s
+    puts "Required: #{required_flight_number}"
+    flight = flights.find { |f| f[:flight_number] == required_flight_number }
+    puts flight
+    if flight
+      puts "Flight found: #{flight}"
+    else
+      puts "Flight not found."
+    end
+    
 
+    return render plain: "Flight not found", status: 404 unless flight
+  
+
+    seats_data = JSON.parse(File.read(SEATS_FILE_PATH))
+    puts seats_data
+    # Find seat info for the flight number
+    flight_seat_info = seats_data.find { |flight| flight["flight_number"] == required_flight_number }
+  
+    if flight_seat_info.nil?
+      @seats = {}  # Return empty hash if no seats found
+    else
+      # Structure: { "economy" => { seat_number => status }, ... }
+      @seats = flight_seat_info["seats"]
+    end
+  
+    render :seats
+  end
+  
   def load_unique_cities
     flights = load_flights_from_txt
     sources = flights.map { |f| f[:source] }
@@ -65,7 +100,7 @@ class FlightsController < ApplicationController
         base_price = flight[price_key].to_f
         available_seats = flight[available_key].to_i
         total_seats = flight[total_seats_key].to_i
-        date=flight[:departure_date]
+        date=flight[:departure_date] 
         total_fare = calculate_total_fare(total_seats, available_seats, base_price, passengers, date)
           flight.merge(total_cost: total_fare, display_price: flight[price_key])
         end
