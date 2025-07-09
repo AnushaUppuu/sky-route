@@ -32,7 +32,7 @@
         </div>
       
         <div class="flight-cell">
-          <%= link_to "Book now", "#", class: "book-btn" %>
+          <%= link_to "Book now", flight_seats_path(flight[:flight_number]), class: "book-btn" %>
         </div>
       </div>
     <% end %>
