@@ -63,7 +63,14 @@
                             <div class="price-per-passenger">Rs. <%= flight[:display_price] %> per passenger</div>
                             <div class="total-price">Rs. <%= flight[:total_cost] %></div>
                         </div>
-                        <%= link_to "Book Now", "#", class: "book-btn" %>
+                        <%= link_to "Book Now", update_seat_count_flights_path(
+                                flight_number: flight[:flight_number],
+                                class_type: flight[:class_type],
+                                passengers: params[:passengers]
+                            ), 
+                            method: :get, 
+                            class: "book-btn"
+                        %>
                     </div>
                 </div>
             <% end %>
