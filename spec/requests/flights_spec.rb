@@ -197,4 +197,97 @@ RSpec.describe "FlightsController", type: :request do
       end
     end
   end
+
+  describe "Tests related to the GET /flights/update_seat_count" do
+    context "when valid booking details and enough seats are available" do
+      it "reduces available seats and redirects with success message" do
+        expect {
+          get "/flights/update_seat_count", params: {
+            flight_number: "AI101",
+            class_type: "economy",
+            passengers: 2
+          }
+        }.to change {
+          CSV.table(file_path, headers: true).find { |row| row[:flight_number] == "AI101" }[:economy_available_seats].to_i
+        }.from(5).to(3)
+
+        expect(response).to redirect_to(root_path)
+        follow_redirect!
+        expect(response.body).to include("Your Booking successful!")
+      end
+    end
+
+    context "when not enough seats are available" do
+      it "does not reduce seats and redirects with alert" do
+        get "/flights/update_seat_count", params: {
+          flight_number: "AI101",
+          class_type: "economy",
+          passengers: 10
+        }
+        expect(response).to redirect_to(search_flights_path)
+        follow_redirect!
+        expect(response.body).to include("Not enough seats available.")
+        seats_after = CSV.table(file_path, headers: true).find { |row| row[:flight_number] == "AI101" }[:economy_available_seats].to_i
+        expect(seats_after).to eq(5)
+      end
+    end
+
+    context "when invalid parameters are provided" do
+      it "redirects with alert when parameters are missing or invalid" do
+        get "/flights/update_seat_count", params: {
+          flight_number: "",
+          class_type: "economy",
+          passengers: 1
+        }
+        expect(response).to redirect_to(search_flights_path)
+        follow_redirect!
+        expect(response.body).to include("Invalid booking details.")
+
+        get "/flights/update_seat_count", params: {
+          flight_number: "AI101",
+          class_type: "",
+          passengers: 1
+        }
+        expect(response).to redirect_to(search_flights_path)
+        follow_redirect!
+        expect(response.body).to include("Invalid booking details.")
+
+        get "/flights/update_seat_count", params: {
+          flight_number: "AI101",
+          class_type: "economy",
+          passengers: 0
+        }
+        expect(response).to redirect_to(search_flights_path)
+        follow_redirect!
+        expect(response.body).to include("Invalid booking details.")
+      end
+    end
+
+    context "when flight number is not found in the data" do
+      it "redirects with alert message indicating flight not found" do
+        get "/flights/update_seat_count", params: {
+          flight_number: "NON_EXISTENT",
+          class_type: "economy",
+          passengers: 1
+        }
+        expect(response).to redirect_to(search_flights_path)
+        follow_redirect!
+        expect(response.body).to include("Flight not found for updating seats.")
+      end
+    end
+
+    context "ensures only the intended row is updated" do
+      it "reduces seats for the correct flight without affecting others" do
+        get "/flights/update_seat_count", params: {
+          flight_number: "AI101",
+          class_type: "economy",
+          passengers: 2
+        }
+        updated_row = CSV.table(file_path, headers: true).find { |row| row[:flight_number] == "AI101" }
+        untouched_row = CSV.table(file_path, headers: true).find { |row| row[:flight_number] == "AI102" }
+        expect(updated_row[:economy_available_seats].to_i).to eq(3)
+        expect(untouched_row[:economy_available_seats].to_i).to eq(0)
+      end
+    end
+  end
 end
