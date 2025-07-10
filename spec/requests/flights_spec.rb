@@ -96,7 +96,7 @@ RSpec.describe "FlightsController", type: :request do
           departure_date: "2025-07-20",
           class_type: "Economy"
         }
-
+  
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("AI101")
         expect(response.body).to include("4500")
@@ -104,7 +104,7 @@ RSpec.describe "FlightsController", type: :request do
         expect(response.body).to include("4800")
       end
     end
-
+  
     context "when searching with First Class and available seats" do
       it "returns flights with available first class seats and correct display price" do
         get "/flights/details", params: {
@@ -113,28 +113,38 @@ RSpec.describe "FlightsController", type: :request do
           departure_date: "2025-07-20",
           class_type: "First Class"
         }
-
+  
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("AI101")
         expect(response.body).to include("9000")
         expect(response.body).not_to include("VI103")
       end
     end
-
+  
     context "when searching with First Class and no available seats" do
-      it "returns no results when no first class seats are available" do
+      it "redirects with alert when no first class seats are available" do
         get "/flights/details", params: {
           source: "Chennai",
           destination: "Bangalore",
           departure_date: "2025-07-21",
           class_type: "First Class"
         }
-        expect(response).to have_http_status(:ok)
-        expect(response.body).not_to include("AI102")
-        expect(response.body).to include("No flights were available for your search")
+    
+        expect(response).to have_http_status(:found) # 302 redirect
+        expect(response).to redirect_to(search_flights_path(
+          source: "Chennai",
+          destination: "Bangalore",
+          departure_date: "2025-07-21",
+          class_type: "First Class"
+        ))
+    
+        follow_redirect!
+    
+        expect(response.body).to include("There are no flights operated from this source to destination with available seats.")
       end
     end
-
+    
+  
     context "when searching with Second Class and available seats" do
       it "returns flights with available second class seats and correct display price" do
         get "/flights/details", params: {
@@ -150,7 +160,7 @@ RSpec.describe "FlightsController", type: :request do
         expect(response.body).to include("7200")
       end
     end
-
+  
     context "when no flights match the search criteria" do
       it "returns an empty @search_results and shows no flights message" do
         get "/flights/details", params: {
@@ -159,13 +169,21 @@ RSpec.describe "FlightsController", type: :request do
           departure_date: "2025-07-25",
           class_type: "Economy"
         }
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("No flights were available for your search")
-        expect(response.body).not_to include("AI101")
-        expect(response.body).not_to include("VI103")
+        expect(response).to have_http_status(:found)  # 302
+        expect(response).to redirect_to(search_flights_path(
+          source: "Warangal",
+          destination: "Karimnagar",
+          departure_date: "2025-07-25",
+          class_type: "Economy"
+        ))
+        
+        follow_redirect!
+        
+        expect(response.body).to include("We are not serving this source and destination.")  # or correct message as per your controller
+        
       end
     end
-
+  
     context "when misses the required params" do
       it "redirects back to search with an alert when source is missing" do
         get "/flights/details", params: {
@@ -174,11 +192,16 @@ RSpec.describe "FlightsController", type: :request do
           class_type: "Economy"
         }
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(search_flights_path)
+        expect(response).to redirect_to(search_flights_path(
+          destination: "Karimnagar",
+          departure_date: "2025-07-25",
+          class_type: "Economy"
+        ))
         follow_redirect!
         expect(response.body).to include("Select both the source and destination cities")
       end
     end
+  
     context "when source and destination are the same" do
       it "redirects back to the search page with an alert" do
         get "/flights/details", params: {
@@ -187,16 +210,20 @@ RSpec.describe "FlightsController", type: :request do
           departure_date: "2025-07-20",
           class_type: "Economy"
         }
-
+  
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(search_flights_path)
-
+        expect(response).to redirect_to(search_flights_path(
+          source: "Delhi",
+          destination: "Delhi",
+          departure_date: "2025-07-20",
+          class_type: "Economy"
+        ))
         follow_redirect!
-
         expect(response.body).to include("Source and destination cannot be the same.")
       end
     end
   end
+  
 
   describe "Tests related to the GET /flights/update_seat_count" do
     context "when valid booking details and enough seats are available" do
