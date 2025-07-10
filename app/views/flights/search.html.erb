@@ -43,10 +43,17 @@
               prompt: "Select Class", class: "form-select" %>
         </div>
       </div>
-      <div class="form-group">
-      <label>Number of passengers</label>
-      <%= number_field_tag :passengers, params[:passengers], min: 1, max: 6, class: "form-select", placeholder: "Enter number" %>
-      </div>
+     <div class="form-group" data-controller="passenger">
+  <label>Passengers</label>
+
+  <div class="passenger-counter">
+    <button type="button" class="counter-btn minus-btn" data-action="passenger#decrement">-</button>
+    <span class="passenger-count" data-passenger-target="count"><%= @passengers || 1 %></span>
+    <button type="button" class="counter-btn plus-btn" data-action="passenger#increment">+</button>
+  </div>
+   <div class="validation-message" data-passenger-target="message" ></div>
+  <%= hidden_field_tag :passengers, @passengers || 1, data: { passenger_target: "input" } %>
+</div>
 
       <div class="button-wrapper">
         <%= submit_tag "Search", class: "search-button" %>
