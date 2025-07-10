@@ -2,7 +2,7 @@
 
 <div class="flight-results-wrapper">
     <div class="flight-header">
-        <%= link_to "← Go Back", search_flights_path, class: "go-back" %>
+        <%= link_to "← Go Back", "javascript:history.back()", class: "go-back" %>
         <h1 class="available-flights-text">
             Available Flights (<%= params[:source] %> ➔ <%= params[:destination] %>)
         </h1>
