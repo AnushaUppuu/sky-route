@@ -4,7 +4,7 @@
   background-repeat: no-repeat;
   background-position: center 30%;
   min-height: 100vh;
-  background-color: #75b2e2;
+  background-color: #2182cd;
 }
 .flight-img {
   display: flex;
@@ -14,7 +14,7 @@
 .get-started-btn {
   display: inline-block;
   padding: 14px 32px;
-  background-color: #75b2e2;
+  background-color: #326790;
   color: #fff;
   font-size: 1.2rem;
   border-radius: 8px;
