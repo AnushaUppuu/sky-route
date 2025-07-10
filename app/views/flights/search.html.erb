@@ -6,7 +6,7 @@
     <h2>Find your ticket Now 🛫</h2>
 
     <% if flash[:alert] %>
-      <div class="error-message"><%= flash[:alert] %></div>
+      <div class="error-message" id="errorMessage"><%= flash[:alert] %></div>
     <% end %>
     <% if flash[:notice] %>
       <div class="notice-message"><%= flash[:notice] %></div>
@@ -54,3 +54,26 @@
     <% end %>
   </div>
 </div>
+
+<script>
+document.addEventListener("turbo:load", function() {
+  const errorDiv = document.getElementById("errorMessage");
+  const sourceField = document.querySelector('[name="source"]');
+  const destinationField = document.querySelector('[name="destination"]');
+ if (errorDiv) {
+    setTimeout(() => {
+      errorDiv.style.opacity = "0";  
+      setTimeout(() => errorDiv.style.display = "none", 500); 
+    }, 3000);
+  }
+
+  if (errorDiv && sourceField && destinationField) {
+    const clearError = () => {
+      errorDiv.style.display = "none";
+    };
+    sourceField.addEventListener("input", clearError);
+    destinationField.addEventListener("input", clearError);
+  }
+});
+
+</script>
