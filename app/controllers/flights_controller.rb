@@ -69,49 +69,71 @@ class FlightsController < ApplicationController
   end
 
   def details
-    if params[:source].present? && params[:destination].present? && params[:source] == params[:destination]
-      flash[:alert] = "Source and destination cannot be the same."
-      redirect_to search_flights_path and return
+    permitted_params = params.permit(:source, :destination, :departure_date, :passengers, :class_type)
+
+    if permitted_params[:source].present? && permitted_params[:destination].present? &&
+       permitted_params[:source] == permitted_params[:destination]
+      redirect_to search_flights_path(permitted_params), alert: "Source and destination cannot be the same." and return
     end
 
-    if params[:source].present? && params[:destination].present?
-      flights = load_flights_from_txt
-      passengers = params[:passengers].present? ? params[:passengers].to_i : 1
-      search_results = flights.select do |flight|
-        flight[:source].downcase.include?(params[:source].downcase) &&
-        flight[:destination].downcase.include?(params[:destination].downcase)
+    unless permitted_params[:source].present? && permitted_params[:destination].present?
+      redirect_to search_flights_path(permitted_params), alert: "Select both the source and destination cities." and return
+    end
+
+    flights = load_flights_from_txt
+    passengers = permitted_params[:passengers].present? ? permitted_params[:passengers].to_i : 1
+
+    matching_flights = flights.select do |flight|
+      flight[:source].downcase.include?(permitted_params[:source].downcase) &&
+      flight[:destination].downcase.include?(permitted_params[:destination].downcase)
+    end
+
+    if matching_flights.empty?
+      redirect_to search_flights_path(permitted_params), alert: "We are not serving this source and destination." and return
+    end
+
+    class_type = permitted_params[:class_type].present? ? permitted_params[:class_type].downcase : 'economy'
+    available_flights = matching_flights.select do |flight|
+      available_key = "#{class_type.gsub(' ', '_')}_available_seats".to_sym
+      flight[available_key].to_i >= passengers
+    end
+
+    if available_flights.empty?
+      redirect_to search_flights_path(permitted_params), alert: "There are no flights operated from this source to destination with available seats." and return
+    end
+
+    if permitted_params[:departure_date].present?
+      available_flights = available_flights.select do |flight|
+        flight[:departure_date] == permitted_params[:departure_date]
       end
 
-      class_type = params[:class_type].present? ? params[:class_type].downcase : 'economy'
-      search_results = search_results.select do |flight|
-          available_key = "#{class_type.gsub(' ', '_')}_available_seats".to_sym
-          flight[available_key].to_i >= passengers
-        end
-
-      if params[:departure_date].present?
-        search_results = search_results.select do |flight|
-          flight[:departure_date] == params[:departure_date]
-        end
+      if available_flights.empty?
+        redirect_to search_flights_path(permitted_params), alert: "There are no flights available on the selected date." and return
       end
-      @search_results = search_results.map do |flight|
-        price_key = case class_type
-        when 'economy' then :economy_base_price
-        when 'first class' then :first_class_base_price
-        when 'second class' then :second_class_base_price
-        end
-        available_key = "#{class_type.gsub(' ', '_')}_available_seats".to_sym
-        total_seats_key = "#{class_type.gsub(' ', '_')}_total_seats".to_sym
+    end
 
-        base_price = flight[price_key].to_f
-        available_seats = flight[available_key].to_i
-        total_seats = flight[total_seats_key].to_i
-        date=flight[:departure_date]
-        total_fare = calculate_total_fare(total_seats, available_seats, base_price, passengers, date)
-          flight.merge(total_cost: total_fare, display_price: flight[price_key], class_type: class_type, seats: available_seats)
-        end
-    else
-      flash[:alert] = "Select both the source and destination cities"
-      redirect_to search_flights_path and return
+    @search_results = available_flights.map do |flight|
+      price_key = case class_type
+      when 'economy' then :economy_base_price
+      when 'first class' then :first_class_base_price
+      when 'second class' then :second_class_base_price
+      end
+      available_key = "#{class_type.gsub(' ', '_')}_available_seats".to_sym
+      total_seats_key = "#{class_type.gsub(' ', '_')}_total_seats".to_sym
+
+      base_price = flight[price_key].to_f
+      available_seats = flight[available_key].to_i
+      total_seats = flight[total_seats_key].to_i
+      date = flight[:departure_date]
+
+      total_fare = calculate_total_fare(total_seats, available_seats, base_price, passengers, date)
+
+      flight.merge(
+        total_cost: total_fare,
+        display_price: flight[price_key],
+        class_type: class_type,
+        seats: available_seats
+      )
     end
 
     render :details
