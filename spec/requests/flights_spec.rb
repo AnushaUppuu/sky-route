@@ -131,7 +131,7 @@ RSpec.describe "FlightsController", type: :request do
         }
         expect(response).to have_http_status(:ok)
         expect(response.body).not_to include("AI102")
-        expect(response.body).to include("No flights were available for your search")
+        expect(response.body).to include("No flights are available for your search")
       end
     end
 
@@ -160,7 +160,7 @@ RSpec.describe "FlightsController", type: :request do
           class_type: "Economy"
         }
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("No flights were available for your search")
+        expect(response.body).to include("No flights are available for your search")
         expect(response.body).not_to include("AI101")
         expect(response.body).not_to include("VI103")
       end
