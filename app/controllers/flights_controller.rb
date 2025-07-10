@@ -77,6 +77,25 @@ class FlightsController < ApplicationController
     if params[:source].present? && params[:destination].present?
       flights = load_flights_from_txt
       passengers = params[:passengers].present? ? params[:passengers].to_i : 1
+
+      @base_date = Date.today
+      @selected_date = params[:departure_date].present? ? Date.parse(params[:departure_date]) : @base_date
+
+
+      center_date = if params[:center_date].present?
+              Date.parse(params[:center_date])
+      elsif @selected_date == @base_date
+                @base_date
+      else
+                @selected_date
+      end
+      if center_date == @base_date
+          @date_range = (0..6).map { |offset| center_date + offset.days }
+      else
+          @date_range = (-3..3).map { |offset| center_date + offset.days }
+      end
+
+
       search_results = flights.select do |flight|
         flight[:source].downcase.include?(params[:source].downcase) &&
         flight[:destination].downcase.include?(params[:destination].downcase)
