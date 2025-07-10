@@ -5,7 +5,7 @@ on:
   push:
     branches: 
     - main
-    - feature/update-total-fare-calculation
+    - user-friendly-messages-search-persistence
 
 jobs:
   scan_ruby:
