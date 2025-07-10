@@ -5,7 +5,7 @@ on:
   push:
     branches: 
     - main
-    - feature/date-base-price
+    - ui/passangers-input
 
 jobs:
   scan_ruby:
