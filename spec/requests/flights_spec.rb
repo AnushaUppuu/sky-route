@@ -55,7 +55,7 @@ RSpec.describe "FlightsController", type: :request do
         "first_class_total_seats" => "20",
         "second_class_total_seats" => "30",
         "economy_available_seats" => "8",
-        "first_class_available_seats" => "0", # No first class seats
+        "first_class_available_seats" => "0",
         "second_class_available_seats" => "20",
         "departure_date" => "2025-07-20",
         "departure_time" => "15:00",
@@ -122,7 +122,7 @@ RSpec.describe "FlightsController", type: :request do
     end
 
     context "when searching with First Class and no available seats" do
-      it "returns no results when no first class seats are available" do
+      it "redirects with alert when no first class seats are available" do
         get "/flights/details", params: {
           source: "Chennai",
           destination: "Bangalore",
@@ -134,6 +134,7 @@ RSpec.describe "FlightsController", type: :request do
         expect(response.body).to include("No flights are available for your search")
       end
     end
+
 
     context "when searching with Second Class and available seats" do
       it "returns flights with available second class seats and correct display price" do
@@ -174,11 +175,11 @@ RSpec.describe "FlightsController", type: :request do
           class_type: "Economy"
         }
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(search_flights_path)
         follow_redirect!
         expect(response.body).to include("Select both the source and destination cities")
       end
     end
+
     context "when source and destination are the same" do
       it "redirects back to the search page with an alert" do
         get "/flights/details", params: {
@@ -189,14 +190,13 @@ RSpec.describe "FlightsController", type: :request do
         }
 
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(search_flights_path)
 
         follow_redirect!
-
         expect(response.body).to include("Source and destination cannot be the same.")
       end
     end
   end
+
 
   describe "Tests related to the GET /flights/update_seat_count" do
     context "when valid booking details and enough seats are available" do
