@@ -123,7 +123,6 @@ RSpec.describe "FlightsController", type: :request do
 
     context "when searching with First Class and no available seats" do
       it "redirects with alert when no first class seats are available" do
-      it "redirects with alert when no first class seats are available" do
         get "/flights/details", params: {
           source: "Chennai",
           destination: "Bangalore",
