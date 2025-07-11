@@ -107,10 +107,10 @@ class FlightsController < ApplicationController
           flight[available_key].to_i >= passengers
         end
 
-      if params[:departure_date].present?
+
         search_results = search_results.select do |flight|
-          flight[:departure_date] == params[:departure_date]
-        end
+          flight[:departure_date] == @selected_date.to_s
+      
       end
       @search_results = search_results.map do |flight|
         price_key = case class_type
