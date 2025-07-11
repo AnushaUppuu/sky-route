@@ -144,7 +144,7 @@ RSpec.describe "Api::V1::FlightsController", type: :request do
         source: "Delhi",
         destination: "Mumbai",
         departure_date: "2025-07-20",
-        passengers: 10, # Requesting more seats than available
+        passengers: 10,
         class_type: "Economy"
       }
       expect(response).to have_http_status(:not_found)

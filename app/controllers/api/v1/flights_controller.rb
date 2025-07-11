@@ -43,7 +43,7 @@ module Api
         end
 
         if updated
-          File.open(FILE_PATH, 'w') { |f| f.write(data.to_csv) }
+          File.open(FILE_PATH, "w") { |f| f.write(data.to_csv) }
           render json: { message: "Booking successful" }, status: :ok
         else
           render json: { error: "Flight not found for updating seats" }, status: :not_found
@@ -73,7 +73,7 @@ module Api
           return render json: { error: "No flights found for this source and destination" }, status: :not_found
         end
 
-        class_type = permitted_params[:class_type].present? ? permitted_params[:class_type].downcase : 'economy'
+        class_type = permitted_params[:class_type].present? ? permitted_params[:class_type].downcase : "economy"
         available_key = "#{class_type.gsub(' ', '_')}_available_seats".to_sym
 
         available_flights = matching_flights.select do |flight|
