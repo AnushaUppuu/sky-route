@@ -2,10 +2,29 @@
 
 <div class="flight-results-wrapper">
     <div class="flight-header">
-        <%= link_to "← Go Back", "javascript:history.back()", class: "go-back" %>
-        <h1 class="available-flights-text">
-            Available Flights (<%= params[:source] %> ➔ <%= params[:destination] %>)
-        </h1>
+        <div class="header-top">
+            <%= link_to "← Go Back", "javascript:history.back()", class: "go-back" %>
+            <h1 class="available-flights-text">
+                Available Flights (<%= params[:source] %> ➔ <%= params[:destination] %>)
+            </h1>
+            
+        </div>
+        <div class="header-bottom">
+            <div class="date-switcher">
+                <% @date_range.each do |date| %>
+                    <%= link_to date.strftime("%b %d (%a)"),
+                        details_flights_path(
+                            source: params[:source],
+                            destination: params[:destination],
+                            class_type: params[:class_type],
+                            passengers: params[:passengers],
+                            departure_date: date,
+                            center_date: params[:center_date] || @selected_date
+                        ),
+                        class: "date-button #{'selected' if date == @selected_date}" %>
+                <% end %>
+            </div>
+        </div>
     </div>
 
     <% if @search_results.present? %>
@@ -77,7 +96,7 @@
         </div>
     <% else %>
         <div class="no-flights-message">
-            <p>No flights were available for your search.</p>
+            <p>No flights are available for your search.</p>
         </div>
     <% end %>
 </div>
