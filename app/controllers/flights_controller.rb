@@ -110,7 +110,6 @@ class FlightsController < ApplicationController
 
         search_results = search_results.select do |flight|
           flight[:departure_date] == @selected_date.to_s
-      
       end
       @search_results = search_results.map do |flight|
         price_key = case class_type
