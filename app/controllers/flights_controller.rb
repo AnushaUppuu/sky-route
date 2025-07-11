@@ -111,7 +111,22 @@ class FlightsController < ApplicationController
         redirect_to search_flights_path(permitted_params), alert: "There are no flights available on the selected date." and return
       end
     end
+     @base_date = Date.today
+      @selected_date = params[:departure_date].present? ? Date.parse(params[:departure_date]) : @base_date
 
+
+      center_date = if params[:center_date].present?
+              Date.parse(params[:center_date])
+      elsif @selected_date == @base_date
+                @base_date
+      else
+                @selected_date
+      end
+      if center_date == @base_date
+          @date_range = (0..6).map { |offset| center_date + offset.days }
+      else
+          @date_range = (-3..3).map { |offset| center_date + offset.days }
+      end
     @search_results = available_flights.map do |flight|
       price_key = case class_type
       when 'economy' then :economy_base_price

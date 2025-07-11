@@ -129,7 +129,6 @@ RSpec.describe "FlightsController", type: :request do
           departure_date: "2025-07-21",
           class_type: "First Class"
         }
-<<<<<<< HEAD
 
         expect(response).to have_http_status(:found) # 302 redirect
         expect(response).to redirect_to(search_flights_path(
@@ -142,11 +141,6 @@ RSpec.describe "FlightsController", type: :request do
         follow_redirect!
 
         expect(response.body).to include("There are no flights operated from this source to destination with available seats.")
-=======
-        expect(response).to have_http_status(:ok)
-        expect(response.body).not_to include("AI102")
-        expect(response.body).to include("No flights are available for your search")
->>>>>>> main
       end
     end
 
@@ -175,7 +169,6 @@ RSpec.describe "FlightsController", type: :request do
           departure_date: "2025-07-25",
           class_type: "Economy"
         }
-<<<<<<< HEAD
         expect(response).to have_http_status(:found)  # 302
         expect(response).to redirect_to(search_flights_path(
           source: "Warangal",
@@ -187,12 +180,6 @@ RSpec.describe "FlightsController", type: :request do
         follow_redirect!
 
         expect(response.body).to include("We are not serving this source and destination.")  # or correct message as per your controller
-=======
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("No flights are available for your search")
-        expect(response.body).not_to include("AI101")
-        expect(response.body).not_to include("VI103")
->>>>>>> main
       end
     end
 
