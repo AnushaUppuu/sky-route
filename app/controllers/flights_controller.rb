@@ -67,6 +67,7 @@ class FlightsController < ApplicationController
     flights = :: FlightDataLoader.load_flights
     passengers = permitted_params[:passengers].present? ? permitted_params[:passengers].to_i : 1
 
+
     matching_flights = flights.select do |flight|
       flight[:source].downcase.include?(permitted_params[:source].downcase) &&
       flight[:destination].downcase.include?(permitted_params[:destination].downcase)
@@ -82,22 +83,8 @@ class FlightsController < ApplicationController
       flight[available_key].to_i >= passengers
     end
 
-    if available_flights.empty?
-      redirect_to search_flights_path(permitted_params), alert: "There are no flights operated from this source to destination with available seats." and return
-    end
-
-    if permitted_params[:departure_date].present?
-      available_flights = available_flights.select do |flight|
-        flight[:departure_date] == permitted_params[:departure_date]
-      end
-
-      if available_flights.empty?
-        redirect_to search_flights_path(permitted_params), alert: "There are no flights available on the selected date." and return
-      end
-    end
-     @base_date = Date.today
+      @base_date = Date.today
       @selected_date = params[:departure_date].present? ? Date.parse(params[:departure_date]) : @base_date
-
 
       center_date = if params[:center_date].present?
               Date.parse(params[:center_date])
@@ -111,6 +98,11 @@ class FlightsController < ApplicationController
       else
           @date_range = (-3..3).map { |offset| center_date + offset.days }
       end
+
+      available_flights = available_flights.select do |flight|
+        flight[:departure_date] == @selected_date.to_s
+    end
+
     @search_results = available_flights.map do |flight|
       price_key = case class_type
       when 'economy' then :economy_base_price
