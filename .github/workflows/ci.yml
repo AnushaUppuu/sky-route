@@ -5,6 +5,7 @@ on:
   push:
     branches: 
     - main
+    - extract-flight-loader
 
 jobs:
   scan_ruby:
