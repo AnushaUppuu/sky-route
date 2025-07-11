@@ -8,24 +8,8 @@ class FlightsController < ApplicationController
   end
 
    def search
-    @cities = load_unique_cities
+    @cities = ::FlightDataLoader.load_unique_cities
     render :search
-  end
-
-  def load_flights_from_txt
-    flights = []
-    CSV.foreach(FILE_PATH, headers: true) do |row|
-      flights << row.to_h.symbolize_keys
-    end
-
-    flights
-  end
-
-  def load_unique_cities
-    flights = load_flights_from_txt
-    sources = flights.map { |f| f[:source] }
-    destinations = flights.map { |f| f[:destination] }
-    (sources + destinations).uniq.compact.sort
   end
 
   def update_seat_count
@@ -80,7 +64,7 @@ class FlightsController < ApplicationController
       redirect_to search_flights_path(permitted_params), alert: "Select both the source and destination cities." and return
     end
 
-    flights = load_flights_from_txt
+    flights = :: FlightDataLoader.load_flights
     passengers = permitted_params[:passengers].present? ? permitted_params[:passengers].to_i : 1
 
     matching_flights = flights.select do |flight|
