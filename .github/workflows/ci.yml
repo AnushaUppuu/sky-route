@@ -5,7 +5,6 @@ on:
   push:
     branches: 
     - main
-    - feature/update-total-fare-calculation
 
 jobs:
   scan_ruby:
