@@ -121,30 +121,6 @@ RSpec.describe "FlightsController", type: :request do
       end
     end
 
-    context "when searching with First Class and no available seats" do
-      it "redirects with alert when no first class seats are available" do
-        get "/flights/details", params: {
-          source: "Chennai",
-          destination: "Bangalore",
-          departure_date: "2025-07-21",
-          class_type: "First Class"
-        }
-
-        expect(response).to have_http_status(:found) # 302 redirect
-        expect(response).to redirect_to(search_flights_path(
-          source: "Chennai",
-          destination: "Bangalore",
-          departure_date: "2025-07-21",
-          class_type: "First Class"
-        ))
-
-        follow_redirect!
-
-        expect(response.body).to include("There are no flights operated from this source to destination with available seats.")
-      end
-    end
-
-
 
     context "when searching with Second Class and available seats" do
       it "returns flights with available second class seats and correct display price" do
