@@ -1,4 +1,2 @@
 airlines,flight_number,source,destination,economy_base_price,first_class_base_price,second_class_base_price,economy_total_seats,first_class_total_seats,second_class_total_seats,economy_available_seats,first_class_available_seats,second_class_available_seats,departure_date,departure_time,arrival_date,arrival_time
 AirIndia,AI101,Delhi,Mumbai,4500,9000,7000,100,20,30,5,10,15,2025-07-20,10:00,2025-07-20,12:00
-AirIndia,AI102,Chennai,Bangalore,3500,8500,6500,100,20,30,0,0,15,2025-07-21,14:00,2025-07-21,16:00
-Vistara,VI103,Delhi,Mumbai,4800,9200,7200,100,20,30,8,0,20,2025-07-20,15:00,2025-07-20,17:00
