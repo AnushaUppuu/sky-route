@@ -4,7 +4,7 @@
   background-repeat: no-repeat;
   background-position: center 30%;
   min-height: 100vh;
-  background-color: #75b2e2;
+  background-color: #2182cd;
 }
 .flight-img {
   display: flex;
@@ -14,7 +14,7 @@
 .get-started-btn {
   display: inline-block;
   padding: 14px 32px;
-  background-color: #75b2e2;
+  background-color: #326790;
   color: #fff;
   font-size: 1.2rem;
   border-radius: 8px;
@@ -46,6 +46,38 @@
   justify-content: space-around;
   align-items: baseline;
 }
+
+.flash-notice {
+    background-color: #e6f9ec;
+    color: #065f46;
+    border-left: 5px solid #34d399;
+    padding: 12px 18px;
+    margin: 20px auto;
+    border-radius: 6px;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    max-width: 400px;
+    font-size: 16px;
+    line-height: 1.4;
+    animation: slideOutLeft 4s forwards;
+}
+
+@keyframes slideOutLeft {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    80% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-150%);
+    }
+}
+
 @media (max-width: 900px) {
   .index-body {
     background-image: url("cloud.png");
@@ -95,3 +127,30 @@
     font-size: 1.2rem;
   }
 }
+html {
+  scroll-behavior: smooth;
+}
+.about-section {
+  opacity: 1;
+  margin-top: 20%;
+  transform: translateY(0);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  padding: 30px 20px;
+  background-color: #f0f8ff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+#about-section:target {
+  animation: slideUp 0.6s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 

@@ -7,11 +7,23 @@ Safe paths, endless skies<br>
 <span class="highlight">Welcome aboard SkyRoute!</span></h2>
    <%= link_to "Get Started", search_flights_path, class: "get-started-btn" %>
 </div>
+<% if flash[:notice] %>
+  <div class="flash-notice">
+    <p><%= flash[:notice] %></p>
+  </div>
+<% end %>
 <div class="flight-img">
 <%= image_tag 'flight.png', height:500, class: "flightImg" %>
 </div>
 
 </div>
- 
+<section id="about-section" class="about-section">
+  <div class="about-content">
+    <h2>SkyRoute</h2>
+    <p>SkyRoute is your trusted flight booking platform offering safe and seamless travel experiences.</p>
+  </div>
+</section>
 
 </body>
+
+

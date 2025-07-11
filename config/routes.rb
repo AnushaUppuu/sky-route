@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     collection do
       get :details
       get :search
-      post :update
+      get :update_seat_count
     end
   end
 end
