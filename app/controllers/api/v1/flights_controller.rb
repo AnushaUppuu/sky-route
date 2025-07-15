@@ -13,7 +13,7 @@ module Api
 
       def search
         cities = ::FlightDataLoader.load_unique_cities
-        render json: { data: cities, message: "Available cities fetched successfully" }, status: :ok
+        render json: { cities: cities, message: "Available cities fetched successfully" }, status: :ok
       end
 
       def update_seat_count
