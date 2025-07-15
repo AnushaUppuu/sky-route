@@ -51,7 +51,7 @@ RSpec.describe "Api::V1::FlightsController", type: :request do
       get "/api/v1/flights/search"
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
-      expect(body["data"]).to be_an(Array)
+      expect(body["cities"]).to be_an(Array)
       expect(body["message"]).to eq("Available cities fetched successfully")
     end
   end
