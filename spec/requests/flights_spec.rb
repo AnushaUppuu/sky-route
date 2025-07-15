@@ -98,9 +98,9 @@ RSpec.describe "Api::V1::FlightsController", type: :request do
     end
   end
 
-  describe "Tests related to the route GET /api/v1/flights/details" do
+  describe "Tests related to the route POST /api/v1/flights/details" do
     it "should returns matching flights when valid params are provided" do
-      get "/api/v1/flights/details", params: {
+      post "/api/v1/flights/details", params: {
         source: "Delhi",
         destination: "Mumbai",
         departure_date: "2025-07-20",
@@ -113,7 +113,7 @@ RSpec.describe "Api::V1::FlightsController", type: :request do
     end
 
     it "should returns error when source and destination are the same" do
-      get "/api/v1/flights/details", params: {
+      post "/api/v1/flights/details", params: {
         source: "Delhi",
         destination: "Delhi"
       }
@@ -123,7 +123,7 @@ RSpec.describe "Api::V1::FlightsController", type: :request do
     end
 
     it "should returns error when no flights found" do
-      get "/api/v1/flights/details", params: {
+      post "/api/v1/flights/details", params: {
         source: "Warangal",
         destination: "Karimnagar"
       }
@@ -133,14 +133,14 @@ RSpec.describe "Api::V1::FlightsController", type: :request do
     end
 
     it "should returns error when params are missing" do
-      get "/api/v1/flights/details", params: { destination: "Mumbai" }
+      post "/api/v1/flights/details", params: { destination: "Mumbai" }
       expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body["error"]).to eq("Source and destination are required")
     end
 
     it "should returns error if no flights available with the given criteria" do
-      get "/api/v1/flights/details", params: {
+      post "/api/v1/flights/details", params: {
         source: "Delhi",
         destination: "Mumbai",
         departure_date: "2025-07-20",
@@ -153,7 +153,7 @@ RSpec.describe "Api::V1::FlightsController", type: :request do
     end
 
     it "should calculates price using first class base price when class_type is 'first class'" do
-      get "/api/v1/flights/details", params: {
+      post "/api/v1/flights/details", params: {
         source: "Delhi",
         destination: "Mumbai",
         departure_date: "2025-07-20",
@@ -167,7 +167,7 @@ RSpec.describe "Api::V1::FlightsController", type: :request do
     end
 
     it "should calculates price using second class base price when class_type is 'second class'" do
-      get "/api/v1/flights/details", params: {
+      post "/api/v1/flights/details", params: {
         source: "Delhi",
         destination: "Mumbai",
         departure_date: "2025-07-20",
