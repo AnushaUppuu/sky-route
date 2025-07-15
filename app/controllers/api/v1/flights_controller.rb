@@ -109,6 +109,21 @@ module Api
             class_type: class_type,
             available_seats: available_seats
           )
+          {
+            airlines: flight[:airlines],
+            flight_number: flight[:flight_number],
+            source: flight[:source],
+            destination: flight[:destination],
+            departure_date: flight[:departure_date],
+            departure_time: flight[:departure_time],
+            arrival_date: flight[:arrival_date],
+            arrival_time: flight[:arrival_time],
+            class_type: class_type,
+            available_seats: available_seats,
+            price: base_price,
+            total_cost: total_fare,
+            passengers: passengers
+          }
         end
 
         render json: { data: results, message: "Flights matching your criteria" }, status: :ok
