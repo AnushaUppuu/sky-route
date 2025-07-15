@@ -10,7 +10,7 @@ Rails.application.routes.draw do
       }
       resources :flights, only: [ :index ] do
         collection do
-          get :details
+          post :details
           get :search
           patch :update_seat_count
         end
