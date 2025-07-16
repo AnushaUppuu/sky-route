@@ -1,0 +1,12 @@
+default: &default
+  pool: 5
+  encoding: unicode
+
+development:
+  url: <%= ENV["DATABASE_URL_DEVELOPMENT"] %>
+
+test:
+  url: <%= ENV["DATABASE_URL_TEST"] %>
+
+production:
+  url: <%= ENV["DATABASE_URL_PRODUCTION"] %>
