@@ -5,7 +5,7 @@ on:
   push:
     branches: 
     - main
-    - extract-flight-loader
+    - configure-postgresql
 
 jobs:
   scan_ruby:
