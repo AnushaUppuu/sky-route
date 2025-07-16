@@ -42,8 +42,10 @@ module Api
           end
         end
 
-        if updated
+         if updated
           File.open(FILE_PATH, "w") { |f| f.write(data.to_csv) }
+            Rails.cache.delete("flights_data")
+            Rails.cache.delete("cities_data")
           render json: { message: "Booking successful" }, status: :ok
         else
           render json: { error: "Flight not found for updating seats" }, status: :not_found
