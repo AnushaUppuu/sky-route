@@ -1,5 +1,8 @@
+# spec/models/city_spec.rb
 require 'rails_helper'
 
 RSpec.describe City, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "is a valid dummy test" do
+    expect(true).to be true
+  end
 end
