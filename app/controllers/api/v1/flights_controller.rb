@@ -47,9 +47,9 @@ module Api
             Rails.cache.delete("flights_data")
             Rails.cache.delete("cities_data")
           render json: { message: "Booking successful" }, status: :ok
-        else
+         else
           render json: { error: "Flight not found for updating seats" }, status: :not_found
-        end
+         end
       end
 
       def details
