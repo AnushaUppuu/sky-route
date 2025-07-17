@@ -10,7 +10,7 @@ end
 
 city_ids.each do |id|
   City.find_or_create_by!(id: id) do |city|
-    city.name = "City#{id}" 
+    city.name = "City#{id}"
   end
 end
 CSV.foreach(filepath, headers: true) do |row|
