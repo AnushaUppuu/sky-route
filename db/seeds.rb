@@ -1,7 +1,6 @@
 require 'csv'
 
 filepath = Rails.root.join('data', 'data.txt')
-# Collect all unique city IDs from flight data
 city_ids = Set.new
 
 CSV.foreach(filepath, headers: true) do |row|
@@ -9,10 +8,9 @@ CSV.foreach(filepath, headers: true) do |row|
   city_ids << row['destination_city_id'].to_i
 end
 
-# Create cities with placeholder names if names aren't available
 city_ids.each do |id|
   City.find_or_create_by!(id: id) do |city|
-    city.name = "City#{id}" # You can change this placeholder logic
+    city.name = "City#{id}" 
   end
 end
 CSV.foreach(filepath, headers: true) do |row|
