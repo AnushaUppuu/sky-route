@@ -5,7 +5,7 @@ on:
   push:
     branches: 
     - main
-    - configure-postgresql
+
 env: 
   DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST}}
 jobs:
