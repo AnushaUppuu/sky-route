@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2025_07_16_171550) do
-  create_schema "auth"
+  execute "CREATE SCHEMA IF NOT EXISTS auth"
   create_schema "extensions"
   create_schema "graphql"
   create_schema "graphql_public"
