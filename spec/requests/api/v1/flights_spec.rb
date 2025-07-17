@@ -110,4 +110,75 @@ RSpec.describe "Api::V1::FlightsController - details", type: :request do
       expect(body["data"].first["price_per_ticket"]).to eq(7000.0)
     end
   end
+
+  describe "Tests related to the PATCH /api/v1/flights/update_seat_count count" do
+    let(:endpoint) { "/api/v1/flights/update_seat_count" }
+
+    it "Should book seats if available and reduces available count" do
+      patch endpoint, params: {
+        flight_number: "AI101",
+        class_type: "economy",
+        passengers: 2
+      }
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body)
+      expect(body["message"]).to eq("Booking successful")
+      expect(flight.reload.economy_available_seats).to eq(3)
+    end
+
+    it "Should returns error if not enough seats" do
+      patch endpoint, params: {
+        flight_number: "AI101",
+        class_type: "economy",
+        passengers: 100
+      }
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Not enough seats available")
+    end
+
+    it "Should returns error if flight is not found" do
+      patch endpoint, params: {
+        flight_number: "ABCD",
+        class_type: "economy",
+        passengers: 1
+      }
+      expect(response).to have_http_status(:not_found)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Flight not found for updating seats")
+    end
+
+    it "Should returns error if invalid class_type is provided" do
+      patch endpoint, params: {
+        flight_number: "AI101",
+        class_type: "business",
+        passengers: 1
+      }
+      expect(response).to have_http_status(:bad_request)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Invalid class type")
+    end
+
+    it "Should returns error if passengers param is missing or invalid" do
+      patch endpoint, params: {
+        flight_number: "AI101",
+        class_type: "economy",
+        passengers: 0
+      }
+      expect(response).to have_http_status(:bad_request)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Invalid booking details")
+    end
+
+    it "Should returns error if flight_number is missing" do
+      patch endpoint, params: {
+        flight_number: "",
+        class_type: "economy",
+        passengers: 1
+      }
+      expect(response).to have_http_status(:bad_request)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Invalid booking details")
+    end
+  end
 end
