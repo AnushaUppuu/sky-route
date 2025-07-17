@@ -5,8 +5,9 @@ on:
   push:
     branches: 
     - main
-    - extract-flight-loader
 
+env: 
+  DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST}}
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
