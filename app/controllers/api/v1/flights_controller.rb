@@ -2,6 +2,42 @@ module Api
   module V1
     class FlightsController < ApplicationController
       include FlightsHelper
+      def update_seat_count
+        flight_number = params[:flight_number]
+        class_type = params[:class_type]&.downcase
+        passengers = params[:passengers].to_i
+
+        if flight_number.blank? || class_type.blank? || passengers <= 0
+          return render json: { error: "Invalid booking details" }, status: :bad_request
+        end
+
+        seat_columns = {
+          "economy" => :economy_available_seats,
+          "first class" => :first_class_available_seats,
+          "second class" => :second_class_available_seats
+        }
+
+        available_seats_column = seat_columns[class_type]
+
+        unless available_seats_column
+          return render json: { error: "Invalid class type" }, status: :bad_request
+        end
+
+        flight = Flight.find_by(flight_number: flight_number)
+
+        unless flight
+          return render json: { error: "Flight not found for updating seats" }, status: :not_found
+        end
+
+        current_seats = flight[available_seats_column].to_i
+
+        if current_seats >= passengers
+          flight.update!(available_seats_column => current_seats - passengers)
+          render json: { message: "Booking successful" }, status: :ok
+        else
+          render json: { error: "Not enough seats available" }, status: :unprocessable_entity
+        end
+      end
 
       def details
         permitted_params = params.permit(:source, :destination, :departure_date, :passengers, :class_type)
