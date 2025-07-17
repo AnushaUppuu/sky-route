@@ -4,6 +4,7 @@ default: &default
   encoding: unicode
 
 development:
+  prepared_statements: false
   url: <%= ENV["DATABASE_URL_DEVELOPMENT"] %>
 
 test:
