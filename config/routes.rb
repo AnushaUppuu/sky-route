@@ -8,13 +8,16 @@ Rails.application.routes.draw do
           [ { message: "Everything is good👌" }.to_json ]
         ]
       }
-      resources :flights, only: [ :index ] do
+
+      resources :flights, only: [] do
         collection do
           post :details
-          get :search
           patch :update_seat_count
         end
       end
+
+      resources :cities, only: [ :index ]
     end
   end
 end
+
