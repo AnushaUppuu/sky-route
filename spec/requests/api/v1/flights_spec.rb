@@ -64,9 +64,9 @@ RSpec.describe "Api::V1::FlightsController - details", type: :request do
         source: "Hyderabad",
         destination: "Chennai"
       }
-      expect(response).to have_http_status(:not_found)
+      expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
-      expect(body["error"]).to eq("No flights found for this source and destination")
+      expect(body["error"]).to eq("Invalid source or destination city")
     end
 
     it "Should returns error when not enough seats available for passengers" do
@@ -79,7 +79,7 @@ RSpec.describe "Api::V1::FlightsController - details", type: :request do
       }
       expect(response).to have_http_status(:not_found)
       body = JSON.parse(response.body)
-      expect(body["error"]).to eq("No flights available with the given criteria")
+      expect(body["error"]).to eq("No flights available on the selected date")
     end
 
     it "Should calculates price using first class base price when class_type is 'first class'" do
