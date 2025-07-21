@@ -95,4 +95,90 @@ end
       expect(helper.days_based_price(days, base_price)).to eq(expected)
     end
   end
+
+  describe 'Tests related to the convert_currency method' do
+    it 'Should returns the amount in US dollars for a given amount' do
+      amount_in_inr = 1000
+      target_currency = "USD"
+      result = convert_currency(amount_in_inr, target_currency)
+      expect(result[:amount]).to eq(12.0)
+      expect(result[:currency]).to eq("USD")
+    end
+
+    it 'Should returns the amount in Euros for a given amount' do
+      amount_in_inr = 2000
+      target_currency = "EUR"
+      result = convert_currency(amount_in_inr, target_currency)
+      expect(result[:amount]).to eq(22.0)
+      expect(result[:currency]).to eq("EUR")
+    end
+
+    it 'Should returns the amount in INR if target currency is INR' do
+      amount_in_inr = 1500
+      target_currency = "INR"
+      result = convert_currency(amount_in_inr, target_currency)
+      expect(result[:amount]).to eq(1500.0)
+      expect(result[:currency]).to eq("INR")
+    end
+
+    it 'Should returns the amount in INR if target currency is unsupported' do
+      amount_in_inr = 1000
+      target_currency = "GBP"
+      result = convert_currency(amount_in_inr, target_currency)
+      expect(result[:amount]).to eq(1000.0)
+      expect(result[:currency]).to eq("INR")
+    end
+
+    it 'Should returns the amount in INR if target currency is nil' do
+      amount_in_inr = 500
+      target_currency = nil
+      result = convert_currency(amount_in_inr, target_currency)
+      expect(result[:amount]).to eq(500.0)
+      expect(result[:currency]).to eq("INR")
+    end
+
+    it 'Should returns the amount in INR if target currency is an empty string' do
+      amount_in_inr = 750
+      target_currency = ""
+      result = convert_currency(amount_in_inr, target_currency)
+      expect(result[:amount]).to eq(750.0)
+      expect(result[:currency]).to eq("INR")
+    end
+
+    it 'Should handles lowercase currency codes by converting them to uppercase' do
+      amount_in_inr = 1000
+      target_currency = "usd"
+      result = convert_currency(amount_in_inr, target_currency)
+      expect(result[:amount]).to eq(12.0)
+      expect(result[:currency]).to eq("USD")
+    end
+  end
+
+  describe 'Tests related to the currency_symbol method' do
+    it 'Should returns ₹ for INR' do
+      expect(currency_symbol("INR")).to eq("₹")
+    end
+
+    it 'Should returns $ for USD' do
+      expect(currency_symbol("USD")).to eq("$")
+    end
+
+    it 'Should returns € for EUR' do
+      expect(currency_symbol("EUR")).to eq("€")
+    end
+
+    it 'Should returns ₹ for unsupported currencies' do
+      expect(currency_symbol("GBP")).to eq("₹")
+    end
+
+    it 'Should returns ₹ if currency_code is an empty string' do
+      expect(currency_symbol("")).to eq("₹")
+    end
+
+    it 'Should handles lowercase currency codes correctly' do
+      expect(currency_symbol("usd")).to eq("$")
+      expect(currency_symbol("eur")).to eq("€")
+      expect(currency_symbol("inR")).to eq("₹")
+    end
+  end
 end
