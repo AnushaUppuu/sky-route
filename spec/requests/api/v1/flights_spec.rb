@@ -114,7 +114,7 @@ RSpec.describe "Api::V1::FlightsController - details", type: :request do
       post "/api/v1/flights/details", params: {
         source: "Delhi",
         destination: "Thirupathi",
-        passengers: 2, 
+        passengers: 2,
         class_type: "second class"
       }
       expect(response).to have_http_status(:not_found)
