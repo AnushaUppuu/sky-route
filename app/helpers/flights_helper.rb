@@ -45,4 +45,27 @@ module FlightsHelper
 
     total_fare_with_date_pricing.round(2)
   end
+  def convert_currency(amount_in_inr, target_currency)
+    exchange_rates = {
+      "INR" => 1.0,
+      "USD" => 0.012,
+      "EUR" => 0.011
+    }
+    target_currency = target_currency.to_s.upcase
+    target_currency = "INR" if target_currency.empty? || !exchange_rates.key?(target_currency)
+    rate = exchange_rates[target_currency]
+    converted_amount = amount_in_inr * rate
+    {
+      amount: converted_amount.round(2),
+      currency: target_currency
+    }
+  end
+  def currency_symbol(currency_code)
+    symbols = {
+      "INR" => "₹",
+      "USD" => "$",
+      "EUR" => "€"
+    }
+    symbols[currency_code.upcase] || "₹"
+  end
 end
