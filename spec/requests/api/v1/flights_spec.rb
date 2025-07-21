@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe "Api::V1::FlightsController - details", type: :request do
   let!(:source_city) { City.create!(name: "Delhi") }
   let!(:destination_city) { City.create!(name: "Mumbai") }
+    let!(:another_city) { City.create!(name: "Thirupathi") }
 
   let!(:flight) do
     Flight.create!(
@@ -79,7 +80,7 @@ RSpec.describe "Api::V1::FlightsController - details", type: :request do
       }
       expect(response).to have_http_status(:not_found)
       body = JSON.parse(response.body)
-      expect(body["error"]).to eq("No flights available on the selected date")
+      expect(body["error"]).to eq("No flights available for 100 travelers")
     end
 
     it "Should calculates price using first class base price when class_type is 'first class'" do
@@ -108,6 +109,17 @@ RSpec.describe "Api::V1::FlightsController - details", type: :request do
       body = JSON.parse(response.body)
       expect(body["data"].first["class_type"]).to eq("second class")
       expect(body["data"].first["price_per_ticket"]).to eq(7000.0)
+    end
+    it "Should return the error message when there are no flight between source and destination" do
+      post "/api/v1/flights/details", params: {
+        source: "Delhi",
+        destination: "Thirupathi",
+        passengers: 2, 
+        class_type: "second class"
+      }
+      expect(response).to have_http_status(:not_found)
+      body=JSON.parse(response.body)
+      expect(body["error"]).to eq("There are no flights operated from this source to destination")
     end
   end
 
