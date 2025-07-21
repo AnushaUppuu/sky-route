@@ -52,6 +52,7 @@ module Api
 
         passengers = permitted_params[:passengers].present? ? permitted_params[:passengers].to_i : 1
         class_type = permitted_params[:class_type]&.downcase || "economy"
+        currency = params[:currency_type]&.upcase || "INR"
 
         source_city = City.find_by(name: permitted_params[:source])
         destination_city = City.find_by(name: permitted_params[:destination])
@@ -107,7 +108,8 @@ module Api
             passengers,
             permitted_params[:departure_date]
           )
-
+          converted_price = convert_currency(base_price, currency)
+          converted_total = convert_currency(total_fare, currency)
           {
             airlines: flight.airlines,
             flight_number: flight.flight_number,
@@ -119,9 +121,10 @@ module Api
             arrival_time: flight.arrival_time.strftime("%H:%M"),
             class_type: class_type,
             available_seats: available_seats,
-            price_per_ticket: base_price,
-            total_cost: total_fare,
-            passengers: passengers
+            price_per_ticket: converted_price[:amount],
+            total_cost: converted_total[:amount],
+            passengers: passengers,
+            currency: currency_symbol(currency)
           }
         end
 
