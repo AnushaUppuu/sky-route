@@ -61,7 +61,13 @@ module Api
         end
 
         flights = Flight.where(source_city_id: source_city.id, destination_city_id: destination_city.id)
+        if flights.blank?
+          return render json: { error: "There are no flights operated from this source to destination" }, status: :not_found
+        end
         flights = flights.where(departure_date: permitted_params[:departure_date]) if permitted_params[:departure_date].present?
+        if flights.blank?
+          return render json: { error: "No flights available on the selected date" }, status: :not_found
+        end
 
         class_type_columns = {
           "economy" => {
@@ -90,9 +96,8 @@ module Api
         available_flights = flights.select do |flight|
           flight[available_seats_column].to_i >= passengers
         end
-
         if available_flights.empty?
-          return render json: { error: "No flights available on the selected date" }, status: :not_found
+          return render json: { error: "No flights available for #{passengers} travelers" }, status: :not_found
         end
 
         results = available_flights.map do |flight|
