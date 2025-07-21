@@ -8,6 +8,7 @@ development:
   url: <%= ENV["DATABASE_URL_DEVELOPMENT"] %>
 
 test:
+  prepared_statements: false
   url: <%= ENV["DATABASE_URL_TEST"] %>
 
 production:
