@@ -40,7 +40,7 @@ module Api
       end
 
       def details
-        permitted_params = params.permit(:source, :destination, :departure_date, :passengers, :class_type)
+        permitted_params = params.permit(:source, :destination, :departure_date, :passengers, :class_type, :currency)
 
         if permitted_params[:source] == permitted_params[:destination]
           return render json: { error: "Source and destination cannot be the same" }, status: :bad_request
@@ -52,7 +52,7 @@ module Api
 
         passengers = permitted_params[:passengers].present? ? permitted_params[:passengers].to_i : 1
         class_type = permitted_params[:class_type]&.downcase || "economy"
-        currency = params[:currency_type]&.upcase || "INR"
+        currency = permitted_params[:currency]&.upcase || "INR"
 
         source_city = City.find_by(name: permitted_params[:source])
         destination_city = City.find_by(name: permitted_params[:destination])
