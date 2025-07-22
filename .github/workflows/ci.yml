@@ -7,7 +7,7 @@ on:
     - main
 
 env: 
-  DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST}}
+  DATABASE_URL_TEST: ${{ secrets.TEST_DB_URL}}
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
