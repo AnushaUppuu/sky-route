@@ -43,3 +43,5 @@ node_modules/
 credentials/*.key
 env, .env.local
 coverage/
+.DS_Store
+db/.DS_Store
