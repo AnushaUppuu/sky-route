@@ -18,7 +18,9 @@
 ## 📋 Description
 
 **SkyRoute** is a lightweight, web-based flight booking application built with Ruby on Rails.
-It allows users to easily search and book flights by entering a source, destination, date, class type, and number of passengers. The system shows only flights with enough available seats, calculates dynamic fares based on demand and time, and offers round-trip discounts. All flight data is stored in a flat file (data.txt) for simplicity and quick updates.
+It allows users to easily search and book flights by entering a source, destination, date, class type, and number of passengers. The system shows only flights with enough available seats, calculates dynamic fares based on demand and time, and offers round-trip discounts. 
+All flight-related data including available flights, cities, class types, and bookings is stored in a **PostgreSQL** database.
+
 
 Users can:
 
@@ -44,7 +46,7 @@ Users can:
 - 💎 Ruby: Programming language used for the core logic
 - 🚂 Rails:Full-stack web framework used to build the application’s structure and handle routing, controllers, and views
 - 🌐 Web Interface: Built with Rails views (ERB/HTML) for user interaction via browser
-- 🗂️ Flat File Storage (data.txt) – All flight and booking data is stored and updated in this file
+- 🗃️ PostgreSQL: Relational database used for storing flights, bookings, cities, and seat information
 - 🧪 RSpec: For writing and running test cases
 - 🧹 RuboCop: For linting and maintaining clean Ruby code
 
@@ -53,7 +55,7 @@ Users can:
 - 💎 Ruby (version 3.2.0)
 - 🚂 Rails (version 8.0.2)
 - 📦 Bundler
-- 📁 data.txt file with valid flight data
+- 🐘 PostgreSQL (as database)
 - 🌐 Web browser (to view the app via localhost)
 - 🧪 RSpec – For running test cases
 - 🧹 RuboCop – For code linting and formatting
@@ -84,9 +86,21 @@ Users can:
    ```bash
    bundle install
    ```
-4. 📄 Add flight data file (data.txt)
-
-- Make sure the file exists and follows the required format.
+4.🐘 Set up PostgreSQL Database
+- Make sure PostgreSQL is installed and running on your system.
+- Create the database:
+  ```bash
+   rails db:create
+  ```
+- Run migrations to set up schema:
+  ```bash
+   rails db:migrate
+  ```
+- Seed the database with initial flight/city/seat data:
+  ```bash
+   rails db:seed
+  ```
+- You can configure your database credentials in config/database.yml if required.
 
 5. 🚀 Start the Rails server:
    ```bash
@@ -144,7 +158,7 @@ RSpec is used to test the application's features, logic, and data accuracy.
 - Departure & arrival time
 - Total fare based on your inputs
 
-4. Confirm booking — and data.txt will be updated
+4. Confirm booking – and the PostgreSQL database will be updated.
 5. (Optional) Select Round Trip to get 5% off on the return ticket.
 
 ## 🤝 Contribution:
