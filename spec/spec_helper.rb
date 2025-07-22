@@ -1,9 +1,14 @@
 require 'simplecov'
 require 'simplecov-console'
 
+
+SimpleCov.start 'rails' do
+  add_filter '/spec/'
+end
+
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter,
-  SimpleCov::Formatter::Console
+  SimpleCov::Formatter::Console,
+  SimpleCov::Formatter::HTMLFormatter
 ])
 
 
