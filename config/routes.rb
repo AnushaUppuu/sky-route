@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       end
 
       resources :cities, only: [ :index ]
+      resources :airports, only: [ :index ]
     end
   end
 end
