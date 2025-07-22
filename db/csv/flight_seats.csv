@@ -1,0 +1,4 @@
+id,flight_schedule_id,flight_class_id,total_seats,available_seats,price
+1,1,1,150,150,3500.0
+2,1,2,20,20,7500.0
+3,2,1,180,180,4200.0

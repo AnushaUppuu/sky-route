@@ -1,0 +1,3 @@
+id,flight_id,departure_time,arrival_time,status
+1,1,06:00,08:30,on_time
+2,2,14:00,16:45,on_time

@@ -1,0 +1,6 @@
+id,airline_id,flight_number,source_airport_id,destination_airport_id,recurrence_id
+1,1,6E123,1,2,1
+2,2,AI456,2,3,2
+3,2,AI789,3,1,3
+4,1,6E321,1,3,4
+5,3,SG999,4,5,1
