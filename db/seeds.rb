@@ -1,64 +1,33 @@
 require 'csv'
-require 'set'
 
-filepath = Rails.root.join('data', 'data.txt')
-
-# Store unique city names
-city_names = Set.new
-flights_data = []
-
-# Step 1: Extract city names and store flight rows
-CSV.foreach(filepath, headers: true) do |row|
-  city_names << row['source']
-  city_names << row['destination']
-  flights_data << row
-end
-
-# Step 2: Seed unique cities into the cities table
-city_name_to_id = {}
-
-city_names.to_a.compact.uniq.sort.each do |city_name|
-  city = City.find_or_create_by!(name: city_name)
-  city_name_to_id[city_name] = city.id
-end
-
-puts "✅ Seeded #{city_name_to_id.size} unique cities."
-
-# Optional: Reload city name to ID mapping from DB for safety
-# city_name_to_id = City.pluck(:name, :id).to_h
-
-# Step 3: Seed flights using city name → city ID mapping
-flights_data.each do |row|
-  source_name = row['source']
-  destination_name = row['destination']
-
-  source_id = city_name_to_id[source_name]
-  destination_id = city_name_to_id[destination_name]
-
-  if source_id.nil? || destination_id.nil?
-    puts "⚠️ Skipping flight #{row['flight_number']} due to missing city mapping."
-    next
+def seed_from_csv(model, path, map_headers = {})
+  puts "Seeding #{model} from #{path}..."
+  CSV.foreach(path, headers: true) do |row|
+    attrs = row.to_h.transform_keys { |key| map_headers[key] || key }
+    model.create!(attrs)
   end
-
-  Flight.create!(
-    airlines: row['airlines'],
-    flight_number: row['flight_number'],
-    source_city_id: source_id,
-    destination_city_id: destination_id,
-    economy_base_price: row['economy_base_price'].to_f,
-    first_class_base_price: row['first_class_base_price'].to_f,
-    second_class_base_price: row['second_class_base_price'].to_f,
-    economy_total_seats: row['economy_total_seats'].to_i,
-    first_class_total_seats: row['first_class_total_seats'].to_i,
-    second_class_total_seats: row['second_class_total_seats'].to_i,
-    economy_available_seats: row['economy_available_seats'].to_i,
-    first_class_available_seats: row['first_class_available_seats'].to_i,
-    second_class_available_seats: row['second_class_available_seats'].to_i,
-    departure_date: row['departure_date'],
-    departure_time: row['departure_time'],
-    arrival_date: row['arrival_date'],
-    arrival_time: row['arrival_time']
-  )
 end
 
-puts "✅ Seeded #{flights_data.size} flights from data/data.txt"
+base_path = Rails.root.join('db', 'csv')
+FlightSeat.delete_all
+FlightSchedule.delete_all
+FlightCustomDate.delete_all
+FlightSpecialDate.delete_all
+FlightWeekday.delete_all
+Flight.delete_all
+Recurrence.delete_all
+FlightClass.delete_all
+Airline.delete_all
+Airport.delete_all
+seed_from_csv(Airport, base_path.join('airports.csv'))
+seed_from_csv(Airline, base_path.join('airlines.csv'))
+seed_from_csv(FlightClass, base_path.join('flightclasses.csv'))
+seed_from_csv(Recurrence, base_path.join('recurrences.csv'))
+seed_from_csv(Flight, base_path.join('flights.csv'))
+seed_from_csv(FlightWeekday, base_path.join('flight_weekdays.csv'))
+seed_from_csv(FlightSpecialDate, base_path.join('flight_special_dates.csv'))
+seed_from_csv(FlightCustomDate, base_path.join('flight_custom_dates.csv'))
+seed_from_csv(FlightSchedule, base_path.join('flight_schedules.csv'))
+seed_from_csv(FlightSeat, base_path.join('flight_seats.csv'))
+
+puts "Seeding complete!"
