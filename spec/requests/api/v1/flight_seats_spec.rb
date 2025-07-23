@@ -85,7 +85,7 @@ RSpec.describe "FlightSeatsController", type: :request do
 
     it "Should return error if schedule not found" do
         @seat.destroy
-        @schedule.destroy  
+        @schedule.destroy
 
         post "/api/v1/flight_seats/update_count", params: valid_params
 
