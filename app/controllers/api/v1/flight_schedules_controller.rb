@@ -37,22 +37,22 @@ module Api
                 next if recurrence.nil?
                 recurrence_type = recurrence.recurrence_type.downcase
                 case recurrence_type
-                    when "daily"
+                when "daily"
                     available_flights << flight
-                    when "weekly"
-                    
+                when "weekly"
+
                         weekdays = FlightWeekday.where(flight_id: flight.id)
                         day_name = departure_date.strftime("%A").downcase
-               
+
                         if weekdays.any? { |fw| fw.day_of_week.downcase == day_name }
                             available_flights << flight
                         end
-                    when "special"
+                when "special"
                         specials = FlightSpecialDate.where(flight_id: flight.id)
                         if specials.any? { |sd| sd.special_date == departure_date }
                             available_flights << flight
                         end
-                    when "custom"
+                when "custom"
                         customs = FlightCustomDate.where(flight_id: flight.id)
                         if customs.any? { |cd| cd.custom_date == departure_date }
                             available_flights << flight
@@ -75,10 +75,10 @@ module Api
                     {
                         id: flight.id,
                         flight_number: flight.flight_number,
-                        departure_time: schedule.departure_time,        
+                        departure_time: schedule.departure_time,
                         arrival_time: schedule.arrival_time,
                         base_price: flight_seat.price,
-                        total_cost:calculate_total_fare(
+                        total_cost: calculate_total_fare(
                             flight_seat.total_seats,
                             flight_seat.available_seats,
                             flight_seat.price,
@@ -97,7 +97,7 @@ module Api
                         },
                         destination_airport: {
                             code: destination_airport.code,
-                            name: destination_airport.name, 
+                            name: destination_airport.name,
                             city: destination_airport.city
                         }
                     }
@@ -105,7 +105,7 @@ module Api
             end.compact
             if available_flights.empty?
                 return render json: { error: "No flights available for #{passengers} travelers" }, status: :not_found
-            end   
+            end
            render json: available_flights
         end
     end
