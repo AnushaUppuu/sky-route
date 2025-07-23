@@ -2,6 +2,11 @@ module Api
   module V1
     class FlightSchedulesController < ApplicationController
         include FlightsHelper
+        def findAirline(airline_id)
+            airline_name= Airline.find_by(id: airline_id)&.name
+            return airline_name if airline_name.present?
+            "Unknown Airline"
+        end
         def search
             permitted_params = params.permit(:source, :destination, :departure_date, :passengers, :class_type, :currency)
             if permitted_params[:source] == permitted_params[:destination]
@@ -90,16 +95,13 @@ module Api
                         currency: currency,
                         class_type: class_type,
                         recurrence: flight.recurrence,
-                        source_airport: {
-                            code: source_airport.code,
-                            name: source_airport.name,
-                            city: source_airport.city
-                        },
-                        destination_airport: {
-                            code: destination_airport.code,
-                            name: destination_airport.name,
-                            city: destination_airport.city
-                        }
+                        airlines: findAirline(flight.airline_id),
+                        source_airport: source_airport.name,
+                        destination_airport: destination_airport.name,
+                        source_airport_city: source_airport.city,
+                        destination_airport_city: destination_airport.city,
+                        passengers: passengers,
+                        departure_date: permitted_params[:departure_date]
                     }
                 end
             end.compact
