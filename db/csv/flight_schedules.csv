@@ -1,3 +1,6 @@
 id,flight_id,departure_time,arrival_time,status
-1,1,06:00,08:30,on_time
-2,2,14:00,16:45,on_time
+1,1,06:00:00,08:15:00,on_time
+2,2,09:30:00,11:45:00,on_time
+3,3,18:00:00,20:00:00,on_time
+4,4,14:00:00,16:30:00,on_time
+5,5,20:45:00,23:30:00,on_time
