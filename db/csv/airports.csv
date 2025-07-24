@@ -1,6 +1,11 @@
 id,name,code,city,country
-1,Indira Gandhi International Airport,DEL,Delhi,India
+1,Indira Gandhi International Airport,DEL,New Delhi,India
 2,Chhatrapati Shivaji Maharaj International Airport,BOM,Mumbai,India
 3,Kempegowda International Airport,BLR,Bangalore,India
-4,Rajiv Gandhi International Airport,HYD,Hyderabad,India
+4,Chennai International Airport,MAA,Chennai,India
 5,Netaji Subhas Chandra Bose International Airport,CCU,Kolkata,India
+6,Rajiv Gandhi International Airport,HYD,Hyderabad,India
+7,Coimbatore International Airport,CJB,Coimbatore,India
+8,Sardar Vallabhbhai Patel International Airport,AMD,Ahmedabad,India
+9,Dabolim Airport,GOI,Goa,India
+10,Trivandrum International Airport,TRV,Thiruvananthapuram,India

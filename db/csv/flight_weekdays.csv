@@ -1,3 +1,11 @@
 id,flight_id,day_of_week
-1,2,Mon
-2,2,Fri
+1,1,Monday
+2,1,Tuesday
+3,1,Wednesday
+4,1,Thursday
+5,1,Friday
+6,1,Saturday
+7,1,Sunday
+8,2,Monday
+9,2,Wednesday
+10,2,Friday

@@ -1,33 +1,56 @@
 require 'csv'
 
-def seed_from_csv(model, path, map_headers = {})
-  puts "Seeding #{model} from #{path}..."
-  CSV.foreach(path, headers: true) do |row|
-    attrs = row.to_h.transform_keys { |key| map_headers[key] || key }
-    model.create!(attrs)
+puts "🌱 Starting clean seeding..."
+
+csv_folder = Rails.root.join("db/csv")
+
+[
+  FlightSeatAvailability,
+  FlightSeat,
+  FlightSchedule,
+  FlightWeekday,
+  FlightSpecialDate,
+  FlightCustomDate,
+  Flight,
+  FlightClass,
+  Recurrence,
+  Airline,
+  Airport
+].each do |model|
+  model.destroy_all
+  puts "🗑️  Cleared #{model} records."
+end
+
+model_files = {
+  Airline => "airlines.csv",
+  Airport => "airports.csv",
+  Recurrence => "recurrences.csv",
+  FlightClass => "flightclasses.csv",
+  Flight => "flights.csv",
+  FlightSchedule => "flight_schedules.csv",
+  FlightSeat => "flight_seats.csv",
+  FlightSeatAvailability => "flight_seat_availability.csv",
+  FlightWeekday => "flight_weekdays.csv",
+  FlightSpecialDate => "flight_special_dates.csv",
+  FlightCustomDate => "flight_custom_dates.csv"
+}
+
+model_files.each do |model, file_name|
+  file_path = csv_folder.join(file_name)
+  unless File.exist?(file_path)
+    puts "⚠️  File #{file_name} not found, skipping..."
+    next
+  end
+
+  puts "🗂️  Seeding #{model} from #{file_name}..."
+
+  CSV.foreach(file_path, headers: true) do |row|
+    begin
+      model.create!(row.to_h)
+    rescue ActiveRecord::RecordInvalid => e
+      puts "❌ Failed to create #{model}: #{e.message}"
+    end
   end
 end
 
-base_path = Rails.root.join('db', 'csv')
-FlightSeat.delete_all
-FlightSchedule.delete_all
-FlightCustomDate.delete_all
-FlightSpecialDate.delete_all
-FlightWeekday.delete_all
-Flight.delete_all
-Recurrence.delete_all
-FlightClass.delete_all
-Airline.delete_all
-Airport.delete_all
-seed_from_csv(Airport, base_path.join('airports.csv'))
-seed_from_csv(Airline, base_path.join('airlines.csv'))
-seed_from_csv(FlightClass, base_path.join('flightclasses.csv'))
-seed_from_csv(Recurrence, base_path.join('recurrences.csv'))
-seed_from_csv(Flight, base_path.join('flights.csv'))
-seed_from_csv(FlightWeekday, base_path.join('flight_weekdays.csv'))
-seed_from_csv(FlightSpecialDate, base_path.join('flight_special_dates.csv'))
-seed_from_csv(FlightCustomDate, base_path.join('flight_custom_dates.csv'))
-seed_from_csv(FlightSchedule, base_path.join('flight_schedules.csv'))
-seed_from_csv(FlightSeat, base_path.join('flight_seats.csv'))
-
-puts "Seeding complete!"
+puts "✅ Seeding completed successfully."
