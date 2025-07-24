@@ -15,7 +15,7 @@ class ModifyFlightSeatsAndCreateFlightSeatAvailabilities < ActiveRecord::Migrati
       t.timestamps
     end
 
-    add_index :flight_seat_availabilities, [:flight_seat_id, :scheduled_date],
+    add_index :flight_seat_availabilities, [ :flight_seat_id, :scheduled_date ],
               unique: true,
               name: 'index_flight_seat_availabilities_on_seat_and_date'
   end

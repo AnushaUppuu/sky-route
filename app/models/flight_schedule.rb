@@ -3,5 +3,5 @@ class FlightSchedule < ApplicationRecord
   has_many :flight_seats, dependent: :destroy
 
   validates :departure_time, :arrival_time, :status, presence: true
-  validates :flight_id, uniqueness: { scope: [:departure_time, :arrival_time] }
+  validates :flight_id, uniqueness: { scope: [ :departure_time, :arrival_time ] }
 end
