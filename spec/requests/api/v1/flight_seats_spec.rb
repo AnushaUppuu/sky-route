@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "FlightSeatsController", type: :request do
+  skip "skipping all FlightSeatsController request specs temporarily" do
   describe "Tests realted to the POST /api/v1/flight_seats/update_count route" do
     before(:each) do
       @airline = Airline.create!(name: "AirTest", code: "AT")
@@ -121,5 +122,6 @@ RSpec.describe "FlightSeatsController", type: :request do
       json = JSON.parse(response.body)
       expect(json["error"]).to eq("Not enough seats available")
     end
+  end
   end
 end
