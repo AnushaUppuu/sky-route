@@ -11,8 +11,7 @@ Rails.application.routes.draw do
 
       resources :flights, only: [] do
         collection do
-          post :details
-          patch :update_seat_count
+          post :search, to: "flights#search"
         end
       end
 
