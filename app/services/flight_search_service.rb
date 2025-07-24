@@ -16,16 +16,17 @@ class FlightSearchService
   end
 
   def fetch_flights
-    flights = Flight.where(source_airport_id: source_airport.id, destination_airport_id: destination_airport.id)
+    flights = Flight.where(
+      source_airport_id: source_airport.id,
+      destination_airport_id: destination_airport.id
+    )
     return not_found("No flights between the selected route") if flights.blank?
-
     flights
   end
 
   def filter_flights_by_date_recurrence(flights)
     available = flights.select { |flight| flight_operates_on_date?(flight) }
     return not_found("No flights available on the selected date") if available.blank?
-
     available
   end
 
@@ -37,19 +38,25 @@ class FlightSearchService
       flight_schedule_id: schedules_by_flight.values.map(&:id),
       flight_class_id: selected_class_id
     ).index_by(&:flight_schedule_id)
-
+   puts "Seats by schedule: #{seats_by_schedule.inspect}"
+    # Find seat availabilities for the selected date
+    seat_availabilities = FlightSeatAvailability.where(
+      flight_seat_id: seats_by_schedule.values.map(&:id),
+      scheduled_date: departure_date
+    ).index_by(&:flight_seat_id)
+    puts "Seat availabilities: #{seat_availabilities.inspect}"
     airlines_by_id = Airline.where(id: flights.map(&:airline_id).uniq).index_by(&:id)
-
+    puts "Airlines: #{airlines_by_id.inspect}"
     available = flights.map do |flight|
       schedule = schedules_by_flight[flight.id]
       seat = schedule && seats_by_schedule[schedule.id]
-      next unless schedule && seat && seat.available_seats >= passengers
+      seat_availability = seat && seat_availabilities[seat.id]
+      next unless schedule && seat && seat_availability && seat_availability.available_seats >= passengers
 
-      build_flight_response(flight, schedule, seat, airlines_by_id[flight.airline_id])
+      build_flight_response(flight, schedule, seat, seat_availability, airlines_by_id[flight.airline_id])
     end.compact
 
     return not_found("No flights available for #{passengers} travelers") if available.blank?
-
     available
   end
 
@@ -66,7 +73,7 @@ class FlightSearchService
     { error: message }
   end
 
-  def build_flight_response(flight, schedule, seat, airline)
+  def build_flight_response(flight, schedule, seat, seat_availability, airline)
     {
       id: flight.id,
       flight_number: flight.flight_number,
@@ -75,7 +82,7 @@ class FlightSearchService
       base_price: seat.price,
       total_cost: calculate_total_fare(seat.price, passengers),
       total_seats: seat.total_seats,
-      available_seats: seat.available_seats,
+      available_seats: seat_availability.available_seats,
       currency: currency,
       class_type: class_type,
       recurrence: flight.recurrence,
@@ -116,7 +123,6 @@ class FlightSearchService
     price.to_f * passengers
   end
 
-  # Memoized parameter accessors
   def source             = params[:source]
   def destination        = params[:destination]
   def class_type         = (params[:class_type]&.downcase || "economy")
