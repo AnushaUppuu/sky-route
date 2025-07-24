@@ -6,132 +6,122 @@ class FlightSearchService
     @status = :ok
   end
 
-  def validate_params
-    if source.blank? || destination.blank?
-      @status = :bad_request
-      return error("Source and destination are required")
-    end
-
-    if source == destination
-      @status = :bad_request
-      return error("Source and destination cannot be the same")
-    end
-
-    unless valid_departure_date?
-      @status = :bad_request
-      return error("Invalid departure date")
-    end
-
-    unless source_airport && destination_airport
-      @status = :bad_request
-      return error("Invalid source or destination airport")
-    end
-
-    unless selected_class_id
-      @status = :bad_request
-      return error("Invalid class type")
-    end
-
-    nil
+  def valid?
+    return error!("Source and destination are required") if source.blank? || destination.blank?
+    return error!("Source and destination cannot be the same") if source == destination
+    return error!("Invalid departure date") unless departure_date_valid?
+    return error!("Invalid source or destination airport") unless source_airport && destination_airport
+    return error!("Invalid class type") unless selected_class_id
+    true
   end
 
   def fetch_flights
     flights = Flight.where(source_airport_id: source_airport.id, destination_airport_id: destination_airport.id)
-    if flights.blank?
-      @status = :not_found
-      return error("No flights between the selected route")
-    end
+    return not_found("No flights between the selected route") if flights.blank?
+
     flights
   end
 
-  def filter_by_recurrence(flights)
-    available = flights.select do |flight|
-      recurrence = flight.recurrence
-      next false unless recurrence
-
-      case recurrence.recurrence_type.downcase
-      when "daily"
-        true
-      when "weekly"
-        weekdays = FlightWeekday.where(flight_id: flight.id)
-        weekdays.any? { |fw| fw.day_of_week.downcase == departure_date.strftime("%A").downcase }
-      when "special"
-        FlightSpecialDate.exists?(flight_id: flight.id, special_date: departure_date)
-      when "custom"
-        FlightCustomDate.exists?(flight_id: flight.id, custom_date: departure_date)
-      else
-        false
-      end
-    end
-
-    if available.blank?
-      @status = :not_found
-      return error("No flights available on the selected date")
-    end
+  def filter_flights_by_date_recurrence(flights)
+    available = flights.select { |flight| flight_operates_on_date?(flight) }
+    return not_found("No flights available on the selected date") if available.blank?
 
     available
   end
 
-  def filter_by_seats_and_class(flights)
-    schedules = FlightSchedule.where(flight_id: flights.map(&:id))
-    if schedules.blank?
-      @status = :not_found
-      return error("No flight schedules available on the selected date")
-    end
+  def filter_available_schedules(flights)
+    schedules_by_flight = FlightSchedule.where(flight_id: flights.map(&:id)).index_by(&:flight_id)
+    return not_found("No flight schedules available on the selected date") if schedules_by_flight.blank?
+
+    seats_by_schedule = FlightSeat.where(
+      flight_schedule_id: schedules_by_flight.values.map(&:id),
+      flight_class_id: selected_class_id
+    ).index_by(&:flight_schedule_id)
+
+    airlines_by_id = Airline.where(id: flights.map(&:airline_id).uniq).index_by(&:id)
+
     available = flights.map do |flight|
-      schedule = schedules.find { |fs| fs.flight_id == flight.id }
-      next unless schedule
+      schedule = schedules_by_flight[flight.id]
+      seat = schedule && seats_by_schedule[schedule.id]
+      next unless schedule && seat && seat.available_seats >= passengers
 
-      flight_seat = FlightSeat.find_by(flight_schedule_id: schedule.id, flight_class_id: selected_class_id)
-      next unless flight_seat && flight_seat.available_seats >= passengers
-
-      {
-        id: flight.id,
-        flight_number: flight.flight_number,
-        departure_time: schedule.departure_time,
-        arrival_time: schedule.arrival_time,
-        base_price: flight_seat.price,
-        total_cost: calculate_total_fare(
-          flight_seat.total_seats,
-          flight_seat.available_seats,
-          flight_seat.price,
-          passengers,
-          params[:departure_date]
-        ),
-        total_seats: flight_seat.total_seats,
-        available_seats: flight_seat.available_seats,
-        currency: currency,
-        class_type: class_type,
-        recurrence: flight.recurrence,
-        airlines: find_airline(flight.airline_id),
-        source_airport: source_airport.name,
-        destination_airport: destination_airport.name,
-        source_airport_city: source_airport.city,
-        destination_airport_city: destination_airport.city,
-        passengers: passengers,
-        departure_date: params[:departure_date]
-      }
+      build_flight_response(flight, schedule, seat, airlines_by_id[flight.airline_id])
     end.compact
 
-    if available.blank?
-      @status = :not_found
-      return error("No flights available for #{passengers} travelers")
-    end
+    return not_found("No flights available for #{passengers} travelers") if available.blank?
 
     available
   end
 
   private
 
-  def error(message)
+  def error!(message)
+    @status = :bad_request
+    @errors = { error: message }
+    false
+  end
+
+  def not_found(message)
+    @status = :not_found
     { error: message }
   end
 
-  def source         = params[:source]
-  def destination    = params[:destination]
-  def class_type     = (params[:class_type]&.downcase || "economy")
-  def currency       = (params[:currency]&.upcase || "INR")
-  def passengers     = (params[:passengers]&.to_i || 1)
+  def build_flight_response(flight, schedule, seat, airline)
+    {
+      id: flight.id,
+      flight_number: flight.flight_number,
+      departure_time: schedule.departure_time,
+      arrival_time: schedule.arrival_time,
+      base_price: seat.price,
+      total_cost: calculate_total_fare(seat.price, passengers),
+      total_seats: seat.total_seats,
+      available_seats: seat.available_seats,
+      currency: currency,
+      class_type: class_type,
+      recurrence: flight.recurrence,
+      airlines: airline&.name,
+      source_airport: source_airport.name,
+      destination_airport: destination_airport.name,
+      source_airport_city: source_airport.city,
+      destination_airport_city: destination_airport.city,
+      passengers: passengers,
+      departure_date: params[:departure_date]
+    }
+  end
+
+  def flight_operates_on_date?(flight)
+    recurrence = flight.recurrence
+    return false unless recurrence
+
+    case recurrence.recurrence_type.to_s.downcase
+    when "daily"
+      true
+    when "weekly"
+      weekdays = FlightWeekday.where(flight_id: flight.id)
+      weekdays.any? { |fw| fw.day_of_week.to_s.downcase == departure_date.strftime("%A").downcase }
+    when "special"
+      FlightSpecialDate.exists?(flight_id: flight.id, special_date: departure_date)
+    when "custom"
+      FlightCustomDate.exists?(flight_id: flight.id, custom_date: departure_date)
+    else
+      false
+    end
+  end
+
+  def departure_date_valid?
+    departure_date.present?
+  end
+
+  def calculate_total_fare(price, passengers)
+    price.to_f * passengers
+  end
+
+  # Memoized parameter accessors
+  def source             = params[:source]
+  def destination        = params[:destination]
+  def class_type         = (params[:class_type]&.downcase || "economy")
+  def currency           = (params[:currency]&.upcase || "INR")
+  def passengers         = (params[:passengers]&.to_i || 1)
 
   def departure_date
     @departure_date ||= begin
@@ -141,19 +131,15 @@ class FlightSearchService
     end
   end
 
-  def valid_departure_date?
-    departure_date.present?
+  def source_airport
+    @source_airport ||= Airport.find_by(code: source)
   end
 
-  def source_airport      = @source_airport ||= Airport.find_by(code: source)
-  def destination_airport = @destination_airport ||= Airport.find_by(code: destination)
-  def selected_class_id   = @selected_class_id ||= FlightClass.find_by(name: class_type.capitalize)&.id
-
-  def calculate_total_fare(total_seats, available_seats, price, passengers, departure_date)
-    price.to_f * passengers
+  def destination_airport
+    @destination_airport ||= Airport.find_by(code: destination)
   end
 
-  def find_airline(airline_id)
-    Airline.find_by(id: airline_id)&.name
+  def selected_class_id
+    @selected_class_id ||= FlightClass.find_by(name: class_type.capitalize)&.id
   end
 end
