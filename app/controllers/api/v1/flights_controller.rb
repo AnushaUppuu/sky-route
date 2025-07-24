@@ -21,6 +21,16 @@ module Api
 
               render json: final_flights, status: :ok
         end
+        def update_count
+          service = BookingService.new(params)
+          result = service.process_booking
+
+          if result
+            render json: result, status: :ok
+          else
+            render json: service.error_message, status: service.status
+          end
+       end
     end
   end
 end
