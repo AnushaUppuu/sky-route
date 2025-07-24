@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       resources :cities, only: [ :index ]
       resources :airports, only: [ :index ]
       post "flight_schedules/search", to: "flight_schedules#search"
+      post "flight_seats/update_count", to: "flight_seats#update_count"
     end
   end
 end
