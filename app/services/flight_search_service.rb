@@ -30,13 +30,16 @@ class FlightSearchService
         destination_airport_id: source_airport.id
       )
 
+      onward_details = filter_available_schedules(onward_flights, departure_date)
+      return_details = filter_available_schedules(return_flights, return_date)
+
       return {
-        onward_flights: onward_flights,
-        return_flights: return_flights.presence || []
+        onward_flights: onward_details.is_a?(Array) ? onward_details : [],
+        return_flights: return_details.is_a?(Array) ? return_details : []
       }
     end
 
-    onward_flights
+    filter_available_schedules(onward_flights, departure_date)
   end
 
   def filter_flights_by_date_recurrence(flights, date)
