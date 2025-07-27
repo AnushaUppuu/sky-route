@@ -72,7 +72,7 @@ class FlightSearchService
     end.compact
 
     return not_found("No flights available for #{passengers} travelers on #{date}") if available.blank?
-
+    puts "Available flights: #{available.inspect}"
     available
   end
 

@@ -14,34 +14,55 @@ module Api
           end
 
           flights = service.fetch_flights
-          return render json: flights, status: service.status if flights.is_a?(Hash) # error
+          puts "Flights fetched: #{flights.inspect}"
+          puts "Trip Type: #{permitted[:trip_type].inspect}"
 
-          if permitted[:trip_type].to_s.downcase == "round_trip"
-            onward_flights = service.filter_flights_by_date_recurrence(flights[:onward_flights], service.send(:departure_date))
-            return render json: onward_flights, status: service.status if onward_flights.is_a?(Hash)
+          if permitted[:trip_type].to_s.parameterize.underscore == "round_trip"
+          puts "Round trip selected"
 
-            return_flights = service.filter_flights_by_date_recurrence(flights[:return_flights], service.send(:return_date))
-            return render json: return_flights, status: service.status if return_flights.is_a?(Hash)
+          errors = {}
+          onward_final = []
+          return_final = []
 
-            final_onward = service.filter_available_schedules(onward_flights, service.send(:departure_date))
-            return render json: final_onward, status: service.status if final_onward.is_a?(Hash)
-
-            final_return = service.filter_available_schedules(return_flights, service.send(:return_date))
-            return render json: final_return, status: service.status if final_return.is_a?(Hash)
-
-            return render json: {
-              onward_flights: final_onward,
-              return_flights: final_return
-            }, status: :ok
+           onward = service.filter_flights_by_date_recurrence(flights[:onward_flights], service.send(:departure_date))
+          if onward.is_a?(Hash)
+            errors[:onward_flights] = onward[:error] || "Error filtering onward flights"
+          else
+            onward_final = service.filter_available_schedules(onward, service.send(:departure_date))
+            if onward_final.is_a?(Hash)
+              errors[:onward_flights] = onward_final[:error] || "No available onward flights"
+              onward_final = []
+            end
           end
 
+          return_ = service.filter_flights_by_date_recurrence(flights[:return_flights], service.send(:return_date))
+          if return_.is_a?(Hash)
+            errors[:return_flights] = return_[:error] || "Error filtering return flights"
+          else
+            return_final = service.filter_available_schedules(return_, service.send(:return_date))
+            if return_final.is_a?(Hash)
+              errors[:return_flights] = return_final[:error] || "No available return flights"
+              return_final = []
+            end
+          end
+
+          result = {
+            onward_flights: onward_final,
+            return_flights: return_final
+          }
+
+          result[:errors] = errors unless errors.empty?
+
+          return render json: result, status: :ok
+          else
             available = service.filter_flights_by_date_recurrence(flights, service.send(:departure_date))
             return render json: available, status: service.status if available.is_a?(Hash)
 
-            final_flights = service.filter_available_schedules(available, service.send(:departure_date))
-            return render json: final_flights, status: service.status if final_flights.is_a?(Hash)
+            final = service.filter_available_schedules(available, service.send(:departure_date))
+            return render json: final, status: service.status if final.is_a?(Hash)
 
-            render json: final_flights, status: :ok
+            render json: final, status: :ok
+          end
       end
 
         def update_count
