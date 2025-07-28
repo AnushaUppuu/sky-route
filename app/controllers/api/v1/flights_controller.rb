@@ -14,11 +14,10 @@ module Api
           end
 
           flights = service.fetch_flights
-          puts "Flights fetched: #{flights.inspect}"
-          puts "Trip Type: #{permitted[:trip_type].inspect}"
+
 
           if permitted[:trip_type].to_s.parameterize.underscore == "round_trip"
-          puts "Round trip selected"
+     
 
           errors = {}
           onward_final = []
