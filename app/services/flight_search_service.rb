@@ -40,15 +40,17 @@ class FlightSearchService
   end
 
   def filter_flights_by_date_recurrence(flights, date)
+    return flights if flights.is_a?(Hash) || flights == :error # guard clause
+
     available = flights.select { |flight| flight_operates_on_date?(flight, date) }
-    return not_found("No flights available on #{date}") if available.blank?
+    return not_found("No flights available on the selected date") if available.blank?
 
     available
   end
 
   def filter_available_schedules(flights, date)
     schedules_by_flight = FlightSchedule.where(flight_id: flights.map(&:id)).index_by(&:flight_id)
-    return not_found("No flight schedules available on #{date}") if schedules_by_flight.blank?
+    return not_found("No flight schedules available on the selected date") if schedules_by_flight.blank?
 
     seats_by_schedule = FlightSeat.where(
       flight_schedule_id: schedules_by_flight.values.map(&:id),
@@ -72,7 +74,7 @@ class FlightSearchService
     end.compact
 
     return not_found("No flights available for #{passengers} travelers on #{date}") if available.blank?
-    puts "Available flights: #{available.inspect}"
+
     available
   end
 
