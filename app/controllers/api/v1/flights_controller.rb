@@ -67,7 +67,7 @@ module Api
           end
         end
 
-        # Only error if both are empty
+
         if onward_final.blank? && return_final.blank?
           return render json: { error: "No flights available for the selected dates" }, status: :not_found
         end

@@ -63,7 +63,6 @@ RSpec.describe "Api::V1::FlightsController", type: :request do
       end
 
       it "returns available flights for round trip with onward and return keys" do
-        # Setup return flight and schedule
         return_flight = Flight.create!(
           flight_number: "AI124",
           source_airport: destination_airport,
@@ -257,7 +256,6 @@ RSpec.describe "Api::V1::FlightsController", type: :request do
 
     context "when seat availability is insufficient" do
       before do
-        # Make sure FlightSeatAvailability exists for the date but with low seats
         set_seat_availability(flight_seat, date: Date.today, available_seats: 0)
       end
 
@@ -276,7 +274,6 @@ RSpec.describe "Api::V1::FlightsController", type: :request do
       end
 
       it "returns error when available seats are less than number of passengers" do
-        # Update availability to 2 seats only
         set_seat_availability(flight_seat, date: Date.today, available_seats: 2)
 
         post "/api/v1/flights/search", params: {

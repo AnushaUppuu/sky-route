@@ -28,7 +28,7 @@ class FlightSearchService
         destination_airport_id: source_airport.id
       )
 
-      # Only return error if BOTH are blank
+
       if onward_flights.blank? && return_flights.blank?
         return not_found("No flights between the selected route")
       end
@@ -39,13 +39,13 @@ class FlightSearchService
       }
     end
 
-    # For one-way, still return error if none found
+
     return not_found("No flights between the selected route") if onward_flights.blank?
     onward_flights
   end
 
   def filter_flights_by_date_recurrence(flights, date)
-    return flights if flights.is_a?(Hash) || flights == :error # guard clause
+    return flights if flights.is_a?(Hash) || flights == :error
 
     available = flights.select { |flight| flight_operates_on_date?(flight, date) }
     return not_found("No flights available on the selected date") if available.blank?
