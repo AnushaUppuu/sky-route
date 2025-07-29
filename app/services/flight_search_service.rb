@@ -22,20 +22,25 @@ class FlightSearchService
       destination_airport_id: destination_airport.id
     )
 
-    return not_found("No flights between the selected route") if onward_flights.blank?
-
     if round_trip?
       return_flights = Flight.where(
         source_airport_id: destination_airport.id,
         destination_airport_id: source_airport.id
       )
 
+      # Only return error if BOTH are blank
+      if onward_flights.blank? && return_flights.blank?
+        return not_found("No flights between the selected route")
+      end
+
       return {
-        onward_flights: onward_flights,
+        onward_flights: onward_flights.presence || [],
         return_flights: return_flights.presence || []
       }
     end
 
+    # For one-way, still return error if none found
+    return not_found("No flights between the selected route") if onward_flights.blank?
     onward_flights
   end
 
