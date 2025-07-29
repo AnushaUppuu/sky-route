@@ -46,7 +46,6 @@ class BookingService
   end
 
   def extract_booking_params
-    puts "Extracting booking params: #{params.inspect}"
     permitted = params.permit(:flight_number, :class_type, :passengers, :scheduled_date)
     [
       permitted[:flight_number],
