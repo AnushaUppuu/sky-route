@@ -17,9 +17,9 @@ module Api
         flights = service.fetch_flights
 
         if permitted[:trip_type].to_s.parameterize.underscore == "round_trip"
-          return render_round_trip_flights(service, flights)
+          render_round_trip_flights(service, flights)
         else
-          return render_one_way_flights(service, flights)
+          render_one_way_flights(service, flights)
         end
       end
 
