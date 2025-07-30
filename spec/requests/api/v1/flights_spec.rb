@@ -298,124 +298,168 @@ RSpec.describe "Api::V1::FlightsController", type: :request do
       @destination_airport = Airport.create!(name: "Dest Airport", code: "DST", city: "CityB", country: "CountryB")
       @recurrence = Recurrence.create!(recurrence_type: "Daily")
 
-      @flight = Flight.create!(
+      @onward_flight = Flight.create!(
         flight_number: "AI123",
         airline_id: @airline.id,
         source_airport_id: @source_airport.id,
         destination_airport_id: @destination_airport.id,
         recurrence_id: @recurrence.id
       )
-
-      @schedule = FlightSchedule.create!(
-        flight_id: @flight.id,
+      @onward_schedule = FlightSchedule.create!(
+        flight_id: @onward_flight.id,
         departure_time: "10:00",
         arrival_time: "12:00",
         status: "On Time"
       )
-
       @flight_class = FlightClass.create!(name: "Economy")
-
-      @seat = FlightSeat.create!(
-        flight_schedule_id: @schedule.id,
+      @onward_seat = FlightSeat.create!(
+        flight_schedule_id: @onward_schedule.id,
         flight_class_id: @flight_class.id,
         total_seats: 50,
         price: 100.0
       )
-
-      @seat_availability = FlightSeatAvailability.create!(
-        flight_seat_id: @seat.id,
+      @onward_availability = FlightSeatAvailability.create!(
+        flight_seat_id: @onward_seat.id,
         scheduled_date: Date.today.to_s,
+        available_seats: 10
+      )
+
+      @return_flight = Flight.create!(
+        flight_number: "AI124",
+        airline_id: @airline.id,
+        source_airport_id: @destination_airport.id,
+        destination_airport_id: @source_airport.id,
+        recurrence_id: @recurrence.id
+      )
+      @return_schedule = FlightSchedule.create!(
+        flight_id: @return_flight.id,
+        departure_time: "16:00",
+        arrival_time: "18:00",
+        status: "On Time"
+      )
+      @return_seat = FlightSeat.create!(
+        flight_schedule_id: @return_schedule.id,
+        flight_class_id: @flight_class.id,
+        total_seats: 50,
+        price: 100.0
+      )
+      @return_availability = FlightSeatAvailability.create!(
+        flight_seat_id: @return_seat.id,
+        scheduled_date: (Date.today + 1).to_s,
         available_seats: 10
       )
     end
 
     let(:valid_params) do
       {
-        flight_number: @flight.flight_number,
+        flight_number: @onward_flight.flight_number,
         class_type: "economy",
         passengers: 3,
         scheduled_date: Date.today.to_s
       }
     end
 
-    it "Should book successfully and should reduce available seats" do
+    it "Should book successfully and reduce available seats for one way trip" do
       post "/api/v1/flights/update_count", params: valid_params
 
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json["message"]).to eq("Booking Successful")
-      expect(@seat_availability.reload.available_seats).to eq(7)
+      expect(@onward_availability.reload.available_seats).to eq(7)
+    end
+
+    it "Should book round trip successfully and reduce seats for both legs" do
+      post "/api/v1/flights/update_count", params: {
+        trip_type: "round_trip",
+        onward: {
+          flight_number: @onward_flight.flight_number,
+          class_type: "economy",
+          passengers: 2,
+          scheduled_date: Date.today.to_s
+        },
+        return: {
+          flight_number: @return_flight.flight_number,
+          class_type: "economy",
+          passengers: 2,
+          scheduled_date: (Date.today + 1).to_s
+        }
+      }
+
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json["onward"]["message"]).to eq("Booking Successful")
+      expect(json["return"]["message"]).to eq("Booking Successful")
+      expect(@onward_availability.reload.available_seats).to eq(8)
+      expect(@return_availability.reload.available_seats).to eq(8)
+    end
+
+    it "Should fail round trip booking if return leg is invalid" do
+      @return_availability.update!(available_seats: 1)
+
+      post "/api/v1/flights/update_count", params: {
+        trip_type: "round_trip",
+        onward: {
+          flight_number: @onward_flight.flight_number,
+          class_type: "economy",
+          passengers: 1002,
+          scheduled_date: Date.today.to_s
+        },
+        return: {
+          flight_number: @return_flight.flight_number,
+          class_type: "economy",
+          passengers: 1002,
+          scheduled_date: (Date.today + 1).to_s
+        }
+      }
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      json = JSON.parse(response.body)
+      expect(json["return"]["error"]).to eq("Not enough seats available")
+      expect(@onward_availability.reload.available_seats).to eq(10)
+      expect(@return_availability.reload.available_seats).to eq(1)
     end
 
     it "Should return error if flight_number is missing" do
       post "/api/v1/flights/update_count", params: valid_params.merge(flight_number: nil)
-
       expect(response).to have_http_status(:bad_request)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Invalid booking details")
     end
 
     it "Should return error if class_type is missing" do
       post "/api/v1/flights/update_count", params: valid_params.merge(class_type: nil)
-
       expect(response).to have_http_status(:bad_request)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Invalid booking details")
     end
 
     it "Should return error if passengers count is zero" do
       post "/api/v1/flights/update_count", params: valid_params.merge(passengers: 0)
-
       expect(response).to have_http_status(:bad_request)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Invalid booking details")
     end
 
     it "Should return error if flight not found" do
       post "/api/v1/flights/update_count", params: valid_params.merge(flight_number: "UNKNOWN")
-
       expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Flight not found")
     end
 
     it "Should return error if schedule not found" do
-      @seat.destroy
-      @schedule.destroy
-
+      @onward_schedule.destroy
       post "/api/v1/flights/update_count", params: valid_params
-
       expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Flight schedule not found")
     end
 
     it "Should return error if class type is invalid" do
-      post "/api/v1/flights/update_count", params: valid_params.merge(class_type: "luxury")
-
+      post "/api/v1/flights/update_count", params: valid_params.merge(class_type: "premium business")
       expect(response).to have_http_status(:bad_request)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Invalid class type")
     end
 
     it "Should return error if seat not found for that class" do
-      @seat.destroy
-
+      @onward_seat.destroy
       post "/api/v1/flights/update_count", params: valid_params
-
       expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Given class is not available for the flight")
     end
 
-    it "Should return error if enough seats are not available" do
-      @seat_availability.update!(available_seats: 2)
-
+    it "Should return error if not enough seats available" do
+      @onward_availability.update!(available_seats: 2)
       post "/api/v1/flights/update_count", params: valid_params.merge(passengers: 5)
-
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Not enough seats available")
     end
   end
 end

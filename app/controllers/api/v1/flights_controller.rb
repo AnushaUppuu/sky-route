@@ -24,13 +24,33 @@ module Api
       end
 
       def update_count
-        service = BookingService.new(params)
-        result = service.process_booking
+        if params[:trip_type].to_s.parameterize.underscore == "round_trip"
+          onward_service = BookingService.new(params[:onward])
+          return_service = BookingService.new(params[:return])
 
-        if result
-          render json: result, status: :ok
+          onward_result = onward_service.process_booking
+          return_result = return_service.process_booking
+
+          if onward_result && return_result
+            render json: {
+              onward: onward_result,
+              return: return_result
+            }, status: :ok
+          else
+            errors = {}
+            errors[:onward] = onward_service.error_message unless onward_result
+            errors[:return] = return_service.error_message unless return_result
+            render json: errors, status: onward_service.status || return_service.status
+          end
         else
-          render json: service.error_message, status: service.status
+          service = BookingService.new(params)
+          result = service.process_booking
+
+          if result
+            render json: result, status: :ok
+          else
+            render json: service.error_message, status: service.status
+          end
         end
       end
 
