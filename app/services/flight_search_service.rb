@@ -1,4 +1,5 @@
 class FlightSearchService
+  include FlightsHelper
   attr_reader :params, :errors, :status
 
   def initialize(params)
@@ -103,7 +104,7 @@ class FlightSearchService
       departure_time: schedule.departure_time,
       arrival_time: schedule.arrival_time,
       base_price: seat.price,
-      total_cost: calculate_total_fare(seat.price, passengers),
+      total_cost: calculate_total_fare(seat.total_seats, seat_availability.available_seats, seat.price, passengers, date),
       total_seats: seat.total_seats,
       available_seats: seat_availability.available_seats,
       currency: currency,
@@ -146,9 +147,6 @@ class FlightSearchService
     return_date.present?
   end
 
-  def calculate_total_fare(price, passengers)
-    price.to_f * passengers
-  end
 
   def round_trip?
     params[:trip_type].to_s.downcase == "round_trip"

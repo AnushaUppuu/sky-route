@@ -16,9 +16,9 @@ module FlightsHelper
     end
   end
   def daysBefore(date)
-    return 0 if date.nil? || date.empty?
+    return 0 if date.nil?
     begin
-      flight_date = Date.parse(date)
+      flight_date = date.is_a?(String) ? Date.parse(date) : date
       (flight_date - Date.today).to_i
     rescue ArgumentError
       0
@@ -37,12 +37,10 @@ module FlightsHelper
     return 0 if total_seats.to_i == 0
     available_percentage = percentage_seats_available(total_seats, available_seats)
     price_per_seat = seat_based_price(available_percentage, base_price)
-
     total_fare = price_per_seat
 
     days = daysBefore(date)
     total_fare_with_date_pricing = days_based_price(days, total_fare)*passengers
-
     total_fare_with_date_pricing.round(2)
   end
   def convert_currency(amount_in_inr, target_currency)
